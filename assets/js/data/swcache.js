@@ -38,7 +38,7 @@ const resource = [
 const allowedDomains = [
   
 
-  'localhost:4000',
+  'darkshellcode.github.io',
 
   
 
